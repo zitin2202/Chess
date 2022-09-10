@@ -6,7 +6,6 @@ namespace Classes
     {
 
         private Shape[,] _cells;
-
         public Field()
         {
             _cells = new Shape[8, 8]
