@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using Xunit;
 using Classes;
 using Enums;
@@ -8,12 +8,12 @@ namespace TestChess
     public class TestChess1
     {
         [Theory]
-        [InlineData(0,0, "Игрок: Second, Фигура: Rook")]
-        [InlineData(2, 3, "Пустая клетка")]
-        [InlineData(4, 5, "Пустая клетка")]
-        [InlineData(6, 7, "Игрок: First, Фигура: Pawn")]
-        [InlineData(3, 3, "Пустая клетка")]
-        [InlineData(7, 5, "Игрок: First, Фигура: Bishfop")]
+        [InlineData(0,0, "РРіСЂРѕРє: Second, Р¤РёРіСѓСЂР°: Rook")]
+        [InlineData(2, 3, "РџСѓСЃС‚Р°СЏ РєР»РµС‚РєР°")]
+        [InlineData(4, 5, "РџСѓСЃС‚Р°СЏ РєР»РµС‚РєР°")]
+        [InlineData(6, 7, "РРіСЂРѕРє: First, Р¤РёРіСѓСЂР°: Pawn")]
+        [InlineData(3, 3, "РџСѓСЃС‚Р°СЏ РєР»РµС‚РєР°")]
+        [InlineData(7, 5, "РРіСЂРѕРє: First, Р¤РёРіСѓСЂР°: Bishfop")]
         public void Test1(int x, int y,string expected)
         {
             Field field = new Field();
