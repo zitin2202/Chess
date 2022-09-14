@@ -12,6 +12,6 @@ namespace Classes
         public abstract ShapeType ShapeType { get;}
         public PlayerSide Side { get; protected set;}
 
-        public abstract void GetMoves();
+        public abstract void GetMoves(Field field, int x, int y);
     }
 }

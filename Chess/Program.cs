@@ -11,6 +11,10 @@ namespace Chess
 
         static void Main(string[] args)
         {
+            MessageConsole mess = new MessageConsole();
+
+            Field field = new Field();
+            mess.ShapeInfo(field.Get(0, 3));
         }
     }
 }

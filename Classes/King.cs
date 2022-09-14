@@ -12,7 +12,7 @@ namespace Classes
 
         public override ShapeType ShapeType => ShapeType.King;
 
-        public override void GetMoves()
+        public override void GetMoves(Field field, int x, int y)
         {
             throw new NotImplementedException();
         }

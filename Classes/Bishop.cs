@@ -12,7 +12,7 @@ namespace Classes
 
         public override ShapeType ShapeType => ShapeType.Bishop;
 
-        public override void GetMoves()
+        public override void GetMoves(Field field, int x, int y)
         {
             throw new NotImplementedException();
         }
