@@ -17,15 +17,16 @@ namespace Chess
             Field field = new Field();
             //mess.ShapeInfo(field.Get(0, 3));
 
-            int shapeY = 7;
-            int shapeX = 1;
+            Point p = new Point(7, 1);
 
 
-            Shape shape = field.Get(shapeY, shapeX);
+
+            Shape shape = field.Get(p);
+            var moves = shape.GetMoves(p);
 
             mess.ShapeInfo(shape);
 
-            foreach (var i in shape.GetMoves(new Point(shapeY, shapeX)))
+            foreach (var i in moves)
             {
                 Console.WriteLine(i);
                 Console.WriteLine((i.Item1.y, i.Item1.x));

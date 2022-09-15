@@ -27,25 +27,25 @@ namespace Classes
 
 
         }
-        public void Set (int y, int x, Shape shape)
+        public void Set (Point p, Shape shape)
         {
-            _cells[y, x] = shape;
+            _cells[p.y, p.x] = shape;
         }
 
-        public Shape Get(int y, int x)
+        public Shape Get(Point p)
         {
-            return _cells[y, x];
+            return _cells[p.y, p.x];
         }
 
-        public IEnumerable<(Point, TypeMove)> OccupDel(IEnumerable<(Point, TypeMove)> list)
-        {
-            foreach (var i in list)
-            {
-                if ((i.Item2 == TypeMove.Simple && this.Get(i.Item1.y, i.Item1.x) == null) || (i.Item2 == TypeMove.Attack && this.Get(i.Item1.y, i.Item1.x) != null))
-                {
-                    yield return (i.Item1, i.Item2);
-                }
-            }
-        }
+        //public IEnumerable<(Point, TypeMove)> OccupDel(IEnumerable<(Point, TypeMove)> list)
+        //{
+        //    foreach (var i in list)
+        //    {
+        //        if ((i.Item2 == TypeMove.Simple && this.Get(i.Item1.y, i.Item1.x) == null) || (i.Item2 == TypeMove.Attack && this.Get(i.Item1.y, i.Item1.x) != null))
+        //        {
+        //            yield return (i.Item1, i.Item2);
+        //        }
+        //    }
+        //}
     }
 }
