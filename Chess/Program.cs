@@ -17,8 +17,9 @@ namespace Chess
             Field field = new Field();
             //mess.ShapeInfo(field.Get(0, 3));
 
-            int shapeX = 1;
-            int shapeY = 6;
+            int shapeY = 0;
+            int shapeX = 3;
+
 
             Shape shape = field.Get(shapeY, shapeX);
 
@@ -31,15 +32,15 @@ namespace Chess
 
             }
 
-            Console.WriteLine("____________________________\n");
+            //Console.WriteLine("____________________________\n");
 
 
-            foreach (var i in field.OccupDel(shape.GetMoves(new Point(shapeY, shapeX))))
-            {
-                Console.WriteLine(i);
-                Console.WriteLine((i.Item1.y, i.Item1.x));
+            //foreach (var i in field.OccupDel(shape.GetMoves(new Point(shapeY, shapeX))))
+            //{
+            //    Console.WriteLine(i);
+            //    Console.WriteLine((i.Item1.y, i.Item1.x));
 
-            }
+            //}
 
 
 

@@ -14,7 +14,9 @@ namespace Classes
 
         public override IEnumerable<(Point, TypeMove)> GetMoves(Point p)
         {
-            throw new NotImplementedException();
+            return FormingMove(p, 1,new Point(1, 0), new Point(-1, 0),
+                new Point(0, 1), new Point(0, -1), new Point(1, 1),
+                new Point(1, -1), new Point(-1, 1), new Point(-1, -1));
         }
     }
 }

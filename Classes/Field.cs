@@ -20,21 +20,21 @@ namespace Classes
              { null,null,null,null,null,null,null,null },
              { null,null,null,null,null,null,null,null },
              { null,null,null,null,null,null,null,null },
-             { null,new Pawn(PlayerSide.Second),new Pawn(PlayerSide.Second),null,null,null,null,null },
+             { null,null,null,null,null,null,null,null },
              { new Pawn(PlayerSide.First), new Pawn(PlayerSide.First),   new Pawn(PlayerSide.First),   new Pawn(PlayerSide.First), new Pawn(PlayerSide.First),  new Pawn(PlayerSide.First),   new Pawn(PlayerSide.First),   new Pawn(PlayerSide.First), },
              { new Rook(PlayerSide.First), new Knight(PlayerSide.First), new Bishop(PlayerSide.First), new King(PlayerSide.First), new Queen(PlayerSide.First), new Bishop(PlayerSide.First), new Knight(PlayerSide.First), new Rook(PlayerSide.First), },
             };
 
 
         }
-        public void Set (int x, int y, Shape shape)
+        public void Set (int y, int x, Shape shape)
         {
-            _cells[x, y] = shape;
+            _cells[y, x] = shape;
         }
 
-        public Shape Get(int x, int y)
+        public Shape Get(int y, int x)
         {
-            return _cells[x, y];
+            return _cells[y, x];
         }
 
         public IEnumerable<(Point, TypeMove)> OccupDel(IEnumerable<(Point, TypeMove)> list)

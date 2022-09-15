@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Enums;
 namespace Classes
@@ -15,7 +16,7 @@ namespace Classes
 
         public override IEnumerable<(Point, TypeMove)> GetMoves(Point p)
         {
-            throw new NotImplementedException();
+            return new Rook(PlayerSide.First).GetMoves(p).Concat(new Bishop(PlayerSide.First).GetMoves(p));
         }
     }
 }
