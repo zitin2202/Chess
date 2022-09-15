@@ -7,5 +7,6 @@ namespace Classes
     interface IMessage
     {
         string ShapeInfo(Shape shape);
+
     }
 }

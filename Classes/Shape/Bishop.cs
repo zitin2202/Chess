@@ -12,7 +12,7 @@ namespace Classes
 
         public override ShapeType ShapeType => ShapeType.Bishop;
 
-        public override void GetMoves(Field field, int x, int y)
+        public override IEnumerable<(Point, TypeMove)> GetMoves(Point p)
         {
             throw new NotImplementedException();
         }

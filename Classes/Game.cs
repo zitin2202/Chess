@@ -5,9 +5,14 @@ using Enums;
 
 namespace Classes
 {
-    class Game
+    public class Game
     {
+    
+        public void Move()
+        {
 
-}
+        }
+    
+    }
 
 }
