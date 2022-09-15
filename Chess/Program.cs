@@ -17,8 +17,8 @@ namespace Chess
             Field field = new Field();
             //mess.ShapeInfo(field.Get(0, 3));
 
-            int shapeY = 0;
-            int shapeX = 3;
+            int shapeY = 7;
+            int shapeX = 1;
 
 
             Shape shape = field.Get(shapeY, shapeX);

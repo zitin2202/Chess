@@ -50,7 +50,7 @@ namespace Classes
                     continue;
                 }
 
-                list = list.Concat(PartOfMove(p, direct));
+                list = list.Concat(PartOfMove(p, direct, lenMoves));
 
 
             }
