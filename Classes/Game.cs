@@ -13,7 +13,7 @@ namespace Classes
         private IEnumerator _turn = TurnToGo();
         private bool _check = false;
         private Dictionary<ChessPiece, List<Point>> _checkPoints; //Используется во время шаха. Клетки на шахматной доске, которые фигура должна пройти, чтобы дойти до короля.
-        
+         
         public Game(Field f)
         {
             _f = f;
