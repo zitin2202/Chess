@@ -8,7 +8,7 @@ using Xunit;
 
 namespace TestChess
 {
-    public class ShapeMoveTest
+    public class ChPMoveTest
     {
 
         [Theory]
@@ -28,7 +28,8 @@ namespace TestChess
         public static IEnumerable<object[]> GetData()
         {
             Point p = new Point(0, 2);
-            yield return new object[] { new Field().Get(p).GetMoves(p), new Point[7] { new Point(1,3), new Point(2, 4), new Point(3, 5), new Point(4, 6), new Point(5, 7), new Point(1, 1), new Point(2, 0) } };
+            Field f = new Field();
+            yield return new object[] { f.GetChP(p).GetMoves(), new Point[7] { new Point(1,3), new Point(2, 4), new Point(3, 5), new Point(4, 6), new Point(5, 7), new Point(1, 1), new Point(2, 0) } };
         }
 
     }

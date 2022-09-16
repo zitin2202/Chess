@@ -1,6 +1,5 @@
 ﻿using System;
 using Classes;
-using Interfaces;
 using Enums;
 using TestChess;
 using System.Collections.Generic;
@@ -12,26 +11,46 @@ namespace Chess
 
         static void Main(string[] args)
         {
-            MessageConsole mess = new MessageConsole();
 
-            Field field = new Field();
-            //mess.ShapeInfo(field.Get(0, 3));
+            Game game = new Game(new Field());
 
-            Point p = new Point(7, 1);
-
-
-
-            Shape shape = field.Get(p);
-            var moves = shape.GetMoves(p);
-
-            mess.ShapeInfo(shape);
-
-            foreach (var i in moves)
+            while (true)
             {
-                Console.WriteLine(i);
-                Console.WriteLine((i.Item1.y, i.Item1.x));
+                Console.WriteLine("Выберите фигуру");
+                string[] s = Console.ReadLine().Split(',');
+                game.Select(new Point(int.Parse(s[0]), int.Parse(s[1])));
+
+                Console.WriteLine("Выберите координаты");
+                s = Console.ReadLine().Split(',');
+                game.Action(new Point(int.Parse(s[0]), int.Parse(s[1])));
+
+
 
             }
+
+            //game.Select(new)
+
+            //MessageConsole mess = new MessageConsole();
+
+            //Field field = new Field();
+            ////mess.ShapeInfo(field.Get(0, 3));
+
+            //Point p = new Point(0, 1);
+
+
+
+            //ChessPiece shape = field.GetChP(p);
+            //var moves = shape.GetMoves(p,field);
+
+
+            //mess.ShapeInfo(shape);
+
+            //foreach (var i in moves)
+            //{
+            //    Console.WriteLine(i);
+            //    Console.WriteLine((i.Item1.y, i.Item1.x));
+
+            //}
 
             //Console.WriteLine("____________________________\n");
 

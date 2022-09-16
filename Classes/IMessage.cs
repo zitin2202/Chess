@@ -6,7 +6,7 @@ namespace Classes
 {
     interface IMessage
     {
-        string ShapeInfo(Shape shape);
+        string ChPInfo(ChessPiece chP);
 
     }
 }

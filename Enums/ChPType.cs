@@ -2,7 +2,7 @@
 
 namespace Enums
 {
-    public enum ShapeType
+    public enum ChPType
     {
         Pawn,
         Rook,

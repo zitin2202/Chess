@@ -6,15 +6,17 @@ namespace Classes
 {
     public class Point
     {
-        public int x { get; }
         public int y { get; }
+        public int x { get; }
+
         private int[] p = new int[2];
         public Point(int y,int x)
         {
-            this.x = x;
             this.y = y;
+            this.x = x;
+
         }
 
- 
+
     }
 }

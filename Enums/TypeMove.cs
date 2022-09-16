@@ -6,7 +6,7 @@ namespace Enums
 {
     public enum TypeMove
     {
-        Simple,
+        Simple=1,
         Attack,
         All //Для всех фигур кроме пешек. Далее, TypeMove клетки, на которой стоит другая фигура нужно будет менять на Attack (по крайней мере, таков план)
     }

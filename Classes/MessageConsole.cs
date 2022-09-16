@@ -6,10 +6,10 @@ namespace Classes
 {
     public class MessageConsole : IMessage
     {
-        public string ShapeInfo(Shape shape)
+        public string ChPInfo(ChessPiece chP)
         {
             string message;
-           if (shape == null)
+           if (chP == null)
             {
                 message = "Пустая клетка";
                 Console.WriteLine(message);
@@ -18,7 +18,7 @@ namespace Classes
 
             else
             {
-                message = $"Игрок: {shape.Side}, Фигура: { shape.ShapeType}";
+                message = $"Игрок: {chP.Side}, Фигура: { chP.ChPType}";
                 Console.WriteLine(message);
             }
 

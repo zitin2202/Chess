@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Enums;
+namespace Classes
+{
+    public class Bishop : ChessPiece
+    {
+        public Bishop(Field f, Point p, PlayerSide side) : base(f, p, side)
+        {
+        }
+
+        public override ChPType ChPType => ChPType.Bishop;
+
+        public override IEnumerable<(Point, TypeMove)> GetMoves()
+        {
+            return FormingMove(7, new Point(1, 1), new Point(1, -1), new Point(-1, 1), new Point(-1, -1));
+
+        }
+    }
+}

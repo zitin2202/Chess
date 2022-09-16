@@ -9,43 +9,41 @@ namespace Classes
         public const int maxX  = 8;
         public const int maxY  = 8;
 
-        private Shape[,] _cells;
+        private ChessPiece[,] _cells;
 
         public Field()
         {
-            _cells = new Shape[maxY, maxX]
+            _cells = new ChessPiece[maxY, maxX]
             {
-             { new Rook(PlayerSide.Second), new Knight(PlayerSide.Second), new Bishop(PlayerSide.Second), new King(PlayerSide.Second), new Queen(PlayerSide.Second), new Bishop(PlayerSide.Second), new Knight(PlayerSide.Second), new Rook(PlayerSide.Second), },
-             { new Pawn(PlayerSide.Second), new Pawn(PlayerSide.Second),   new Pawn(PlayerSide.Second),   new Pawn(PlayerSide.Second), new Pawn(PlayerSide.Second),  new Pawn(PlayerSide.Second),   new Pawn(PlayerSide.Second),   new Pawn(PlayerSide.Second), },
+             { new Rook(this,new Point(0,0), PlayerSide.Second), new Knight(this,new Point(0,1),PlayerSide.Second), new Bishop(this,new Point(0,2),PlayerSide.Second), new King(this,new Point(0,3),PlayerSide.Second), new Queen(this,new Point(0,4),PlayerSide.Second), new Bishop(this,new Point(0,5),PlayerSide.Second), new Knight(this,new Point(0,6),PlayerSide.Second), new Rook(this,new Point(0,7),PlayerSide.Second), },
+             { new Pawn(this,new Point(1,0),PlayerSide.Second),  new Pawn(this,new Point(1,1),PlayerSide.Second),   new Pawn(this,new Point(1,2),PlayerSide.Second),   new Pawn(this,new Point(1,3),PlayerSide.Second), new Pawn(this,new Point(1,4),PlayerSide.Second),  new Pawn(this,new Point(1,5),PlayerSide.Second),   new Pawn(this,new Point(1,6),PlayerSide.Second),   new Pawn(this,new Point(1,7),PlayerSide.Second), },
+             { null,null,new Pawn(this,new Point(2,2),PlayerSide.First),null,null,null,null,null },
              { null,null,null,null,null,null,null,null },
              { null,null,null,null,null,null,null,null },
              { null,null,null,null,null,null,null,null },
-             { null,null,null,null,null,null,null,null },
-             { new Pawn(PlayerSide.First), new Pawn(PlayerSide.First),   new Pawn(PlayerSide.First),   new Pawn(PlayerSide.First), new Pawn(PlayerSide.First),  new Pawn(PlayerSide.First),   new Pawn(PlayerSide.First),   new Pawn(PlayerSide.First), },
-             { new Rook(PlayerSide.First), new Knight(PlayerSide.First), new Bishop(PlayerSide.First), new King(PlayerSide.First), new Queen(PlayerSide.First), new Bishop(PlayerSide.First), new Knight(PlayerSide.First), new Rook(PlayerSide.First), },
+             { new Pawn(this,new Point(6,0),PlayerSide.First), new Pawn(this,new Point(6,1),PlayerSide.First),   new Pawn(this,new Point(6,2),PlayerSide.First),   new Pawn(this,new Point(6,3),PlayerSide.First), new Pawn(this,new Point(6,4),PlayerSide.First),  new Pawn(this,new Point(6,5),PlayerSide.First),   new Pawn(this,new Point(6,6),PlayerSide.First),   new Pawn(this,new Point(6,7),PlayerSide.First), },
+             { new Rook(this,new Point(7,0),PlayerSide.First), new Knight(this,new Point(7,1),PlayerSide.First), new Bishop(this,new Point(7,2),PlayerSide.First), new King(this,new Point(7,3),PlayerSide.First), new Queen(this,new Point(7,4),PlayerSide.First), new Bishop(this,new Point(7,5),PlayerSide.First), new Knight(this,new Point(7,6),PlayerSide.First), new Rook(this,new Point(7,7),PlayerSide.First), },
             };
 
 
         }
-        public void Set (Point p, Shape shape)
+        public void SetChP (Point p, ChessPiece chP)
         {
-            _cells[p.y, p.x] = shape;
+            _cells[p.y, p.x] = chP;
+
+            if (chP != null)
+            {
+                chP._p = p;
+                chP.StartPosition = false;
+            }
+                
         }
 
-        public Shape Get(Point p)
+        public ChessPiece GetChP(Point p)
         {
             return _cells[p.y, p.x];
         }
 
-        //public IEnumerable<(Point, TypeMove)> OccupDel(IEnumerable<(Point, TypeMove)> list)
-        //{
-        //    foreach (var i in list)
-        //    {
-        //        if ((i.Item2 == TypeMove.Simple && this.Get(i.Item1.y, i.Item1.x) == null) || (i.Item2 == TypeMove.Attack && this.Get(i.Item1.y, i.Item1.x) != null))
-        //        {
-        //            yield return (i.Item1, i.Item2);
-        //        }
-        //    }
-        //}
+
     }
 }
