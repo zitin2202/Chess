@@ -16,20 +16,19 @@ namespace Classes
 
 
 
-        public override IEnumerable<(Point, TypeMove)> GetMoves()
+        public override IEnumerable<IEnumerable<(Point, TypeMove)>> GetMoves()
         {
             
             int yDirect = (this.Side == PlayerSide.First ? -1 : 1);
             int lenMove = (StartPosition ? 2 : 1);
 
-            var list = PartOfMove(new Point(yDirect, 0), lenMove, TypeMove.Simple);
+            //var list = PartOfMove(new Point(yDirect, 0), lenMove, TypeMove.Simple);
+            //list = list.Concat(PartOfMove(new Point(yDirect, 1), 1, TypeMove.Attack));
+            //list = list.Concat(PartOfMove(new Point(yDirect, -1), 1, TypeMove.Attack));
 
-            list = list.Concat(PartOfMove(new Point(yDirect, 1), 1, TypeMove.Attack));
-            list = list.Concat(PartOfMove(new Point(yDirect, -1), 1, TypeMove.Attack));
-
-
-
-            return list;
+            yield return PartOfMove(new Point(yDirect, 0), lenMove, TypeMove.Simple);
+            yield return PartOfMove(new Point(yDirect, 1), 1, TypeMove.Attack);
+            yield return PartOfMove(new Point(yDirect, -1), 1, TypeMove.Attack);
 
 
 

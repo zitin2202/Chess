@@ -23,15 +23,19 @@ namespace Classes
         {
 
             ChessPiece chP = _f.GetChP(p);
-
-            if (!AccessChP(chP))
-            {
-                Console.WriteLine("Здесь нету фигуры, которую вы могли бы взять");
-                return false;
-            }
-
             _turn.MoveNext();
-            Console.WriteLine($"Очередь игрока: {_turn.Current}");
+
+            //if (!AccessChP(chP))
+            //{
+            //    Console.WriteLine("Здесь нету фигуры, которую вы могли бы взять");
+            //    return false;
+            //}
+
+            //else
+            //{
+            //    Console.WriteLine($"Очередь игрока: {_turn.Current}");
+
+            //}
 
 
             _activeChP.Item1 = chP;
@@ -40,12 +44,15 @@ namespace Classes
 
             var list = chP.GetMoves();
 
-            foreach (var i in list)
+            foreach (var line in list)
             {
-                _activeChP.Item2[i.Item1.y, i.Item1.x] = i.Item2;
+                foreach (var i in line)
+                {
+                    _activeChP.Item2[i.Item1.y, i.Item1.x] = i.Item2;
+                    ChessPiece targetChP = _f.GetChP(new Point(i.Item1.y, i.Item1.x));
+                    Console.WriteLine($"{(i.Item1.y, i.Item1.x)}: {((targetChP == null ? "Пусто" : targetChP.ChPType.ToString()), _activeChP.Item2[i.Item1.y, i.Item1.x])}");
+                }
 
-                ChessPiece targetChP = _f.GetChP(new Point(i.Item1.y, i.Item1.x));
-                Console.WriteLine($"{(i.Item1.y,i.Item1.x)}: {((targetChP == null ? "Пусто": targetChP.ChPType.ToString()),_activeChP.Item2[i.Item1.y, i.Item1.x])}");
             }
 
             return true;
@@ -83,6 +90,12 @@ namespace Classes
             return true;
            
 
+
+        }
+
+        private void EditMoves()
+        {
+           
 
         }
 

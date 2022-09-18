@@ -14,7 +14,7 @@ namespace Classes
 
         public override ChPType ChPType => ChPType.Queen;
 
-        public override IEnumerable<(Point, TypeMove)> GetMoves()
+        public override IEnumerable<IEnumerable<(Point, TypeMove)>> GetMoves()
         {
             return new Rook(_f, _p,Side).GetMoves().Concat(new Bishop(_f,_p, Side).GetMoves());
             
