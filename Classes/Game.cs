@@ -12,11 +12,17 @@ namespace Classes
         private (ChessPiece,TypeMove[,]) _activeChP = (null,new TypeMove[Field.maxY,Field.maxX]);
         private IEnumerator _turn = TurnToGo();
         private bool _check = false;
-        private Dictionary<ChessPiece, List<Point>> _checkPoints; //Используется во время шаха. Клетки на шахматной доске, которые фигура должна пройти, чтобы дойти до короля.
-         
+        private Dictionary<ChessPiece, List<Point>> _protectKing;
+        private List<List<Point>> _checkLines;
+        private bool[,] _unsafeCell = new bool[Field.maxY, Field.maxX];
         public Game(Field f)
         {
             _f = f;
+        }
+
+        public bool Start(Point p)
+        {
+            while
         }
 
         public bool Select(Point p)
@@ -88,14 +94,111 @@ namespace Classes
             _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
 
             return true;
-           
-
+          
 
         }
 
-        private void EditMoves()
+        private void EditMoves(ChessPiece thisChP,IEnumerable<IEnumerable<(Point, TypeMove)>> list, bool afterStop=false)
         {
-           
+            foreach (var line in list)
+            {
+                bool check = false;
+                (ChessPiece,List<Point>) interval = (null,new List<Point>());
+                interval.Item2.Add(thisChP._p);
+                foreach (var i in line)
+                {
+                    Point p = i.Item1;
+                    TypeMove type = i.Item2;
+                    ChessPiece cellChP = _f.GetChP(p);
+                    TypeMove result = 0;
+
+                    if (cellChP == null && type != TypeMove.Attack) //все случаи, когда на клетке нету фигуры и можно походить без атаки
+                    {
+
+                        if (afterStop) //если это пвседоход
+                        {
+                            if (interval.Item1 == null)
+                            {
+                                _unsafeCell[p.y, p.x] = true;
+
+                            }
+                            if (!check)
+                            {
+                                interval.Item2.Add(p);
+                            }
+                            continue;
+                        }
+
+                        else 
+                            result = TypeMove.Simple;
+
+
+                    }
+
+                    else if (cellChP != null) //все случаи, когда на клетке есть фигура
+                    {
+                        if (type != TypeMove.Simple)//данным ходом можно атаковать
+                        {
+                            if (thisChP.Side != cellChP.Side) //фигура вражеская
+                            {
+                                if (afterStop)
+                                {
+
+                                    if (cellChP.ChPType == ChPType.King)
+                                    {
+                                        if (interval.Item1 != null)
+                                        {
+                                            _protectKing[interval.Item1] = interval.Item2;
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            _unsafeCell[p.y, p.x] = true;
+                                            _checkLines.Add(interval.Item2);
+                                            check = true;
+                                        }
+
+                                    }
+
+                                    else if (interval.Item1 == null && !check)
+                                    {
+                                        interval.Item1 = cellChP;
+                                    }
+                                    else
+                                        break;
+                                }
+
+                                else
+                                    result = TypeMove.Attack;
+
+
+                            }
+
+                            else if (afterStop)
+                            {
+                                _unsafeCell[p.y, p.x] = true;
+                                break;
+                            }
+
+                        }
+
+                        else
+                            break;
+
+
+                    }
+
+                    if (!afterStop)
+                    {
+                        _activeChP.Item2[p.y, p.x] = result;
+                        if (result == TypeMove.Attack)
+                            break;
+
+                    }
+
+                }
+
+            }
 
         }
 

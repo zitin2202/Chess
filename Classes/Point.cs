@@ -6,8 +6,8 @@ namespace Classes
 {
     public class Point
     {
-        public int y { get; }
-        public int x { get; }
+        public int y { get; set; }
+        public int x { get; set; }
 
         private int[] p = new int[2];
         public Point(int y,int x)

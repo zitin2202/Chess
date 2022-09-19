@@ -37,48 +37,7 @@ namespace Classes
 
                 if (newP.x <= maxX && newP.x >= 0 && newP.y <= maxY && newP.y >= 0) //определение, находиться ли клетка внутри поля
                 {
-                    ChessPiece chP = _f.GetChP(newP);
-
-                    if (chP == null && type != TypeMove.Attack) //все случаи, когда на клетке нету фигуры и можно походить без атаки
-                    {
-             
-                        if (type  == TypeMove.EnemyStop) //если это пвседоход
-                        {
-                            yield return (newP, TypeMove.EnemyStop);
-                        }
-
-                        else //если это обычный ход
-                        {
-                            yield return (newP, TypeMove.Simple);
-
-                        }
-                        
-
-                    }
-
-                    else if (chP != null) //все случаи, когда на клетке есть фигура
-                    {
-
-                        if (this.Side != chP.Side && type != TypeMove.Simple) //фигура вражеская и данным ходом можно атаковать
-                        {
-                            yield return (newP, TypeMove.Attack);
-                        }
-
-
-                        else if (type == TypeMove.EnemyStop || type == TypeMove.Simple) //если данный ход - пвсевдоход, линия из ходов обрывается,
-                                                                                   //а для обычных ходов пвсевдоходы не делаются
-                        {
-                            yield break;
-                        }
-
-                        else  //если на ходе была дружеская фигура или атаковать ее нельзя
-                        {
-                            yield return (newP, TypeMove.EnemyStop); 
-                        }
-
-                        type = TypeMove.EnemyStop; //последующие ходы данной линии влоть до первой встреченной фигуры будут псевдо
-
-                    }
+                    yield return (newP, type);
 
                 }
 

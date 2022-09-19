@@ -14,19 +14,33 @@ namespace Chess
 
             Game game = new Game(new Field());
 
-            while (true)
+            //while (true)
+            //{
+            //    Console.WriteLine("Выберите фигуру");
+            //    string[] s = Console.ReadLine().Split(',');
+            //    game.Select(new Point(int.Parse(s[0]), int.Parse(s[1])));
+
+            //    Console.WriteLine("Выберите координаты");
+            //    s = Console.ReadLine().Split(',');
+            //    game.Action(new Point(int.Parse(s[0]), int.Parse(s[1])));
+
+
+
+            //}
+            List<Point> list = new List<Point>();
+            Point p = new Point(2, 2);
+            list.Add(p);
+
+
+
+            p.y = 3;
+            foreach (var item in list)
             {
-                Console.WriteLine("Выберите фигуру");
-                string[] s = Console.ReadLine().Split(',');
-                game.Select(new Point(int.Parse(s[0]), int.Parse(s[1])));
-
-                Console.WriteLine("Выберите координаты");
-                s = Console.ReadLine().Split(',');
-                game.Action(new Point(int.Parse(s[0]), int.Parse(s[1])));
-
-
+                Console.WriteLine((item.y, item.x));
 
             }
+
+
 
             //game.Select(new)
 
