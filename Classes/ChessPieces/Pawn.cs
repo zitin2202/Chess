@@ -8,7 +8,7 @@ namespace Classes
 {
     public class Pawn : ChessPiece
     {
-        public Pawn(Field f, Point p, PlayerSide side) : base(f, p, side)
+        public Pawn(Point p, PlayerSide side) : base(p, side)
         {
         }
 

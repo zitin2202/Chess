@@ -7,7 +7,7 @@ namespace Classes
 {
     public class Knight : ChessPiece
     {
-        public Knight(Field f, Point p, PlayerSide side) : base(f, p, side)
+        public Knight(Point p, PlayerSide side) : base(p, side)
         {
         }
 

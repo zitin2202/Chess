@@ -8,9 +8,8 @@ namespace Classes
 
      public abstract class ChessPiece
     {
-        public ChessPiece( Field f, Point p, PlayerSide side)
+        public ChessPiece(Point p, PlayerSide side)
         {
-            _f = f;
             _p = p;
             Side = side;
 
@@ -18,7 +17,6 @@ namespace Classes
         public abstract ChPType ChPType { get;}
         public PlayerSide Side { get; protected set;}
 
-        public Field _f { get;}
 
         public Point _p;
 
@@ -27,6 +25,7 @@ namespace Classes
 
         protected IEnumerable<(Point, TypeMove)> PartOfMove(Point direct, int lenMove,TypeMove type=TypeMove.All) //определяет один конктретный ход у
                                                                                                                   //фигуры или одну линию ходов, если фигура ходит линиями.
+                                                                                                                  //(без учета фигур на поле)
         {
             int maxX = Field.maxX - 1;
             int maxY = Field.maxY - 1;

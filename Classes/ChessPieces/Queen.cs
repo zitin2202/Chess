@@ -8,7 +8,7 @@ namespace Classes
 
     public class Queen : ChessPiece
     {
-        public Queen(Field f, Point p, PlayerSide side) : base(f, p, side)
+        public Queen(Point p, PlayerSide side) : base(p, side)
         {
         }
 
@@ -16,7 +16,7 @@ namespace Classes
 
         public override IEnumerable<IEnumerable<(Point, TypeMove)>> GetMoves()
         {
-            return new Rook(_f, _p,Side).GetMoves().Concat(new Bishop(_f,_p, Side).GetMoves());
+            return new Rook(_p,Side).GetMoves().Concat(new Bishop(_p, Side).GetMoves());
             
         }
     }

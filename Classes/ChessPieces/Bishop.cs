@@ -7,7 +7,7 @@ namespace Classes
 {
     public class Bishop : ChessPiece
     {
-        public Bishop(Field f, Point p, PlayerSide side) : base(f, p, side)
+        public Bishop(Point p, PlayerSide side) : base(p, side)
         {
         }
 

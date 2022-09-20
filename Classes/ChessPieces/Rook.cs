@@ -8,7 +8,7 @@ namespace Classes
 {
     public class Rook : ChessPiece
     {
-        public Rook(Field f, Point p, PlayerSide side) : base(f,p,side)
+        public Rook(Point p, PlayerSide side) : base(p,side)
         {
         }
 

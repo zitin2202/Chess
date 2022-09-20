@@ -47,9 +47,8 @@ namespace Classes
 
             }
         }
-        public void ConsoleFieldGUI()
+        public void ConsoleFieldGUI()//временная функция вывода поля в консоли
         {
-            string cell = "|--|";
             string fieldGui = "  ";
 
             for (int x = 0; x < Field.maxX; x++)
@@ -79,26 +78,16 @@ namespace Classes
             Console.WriteLine(fieldGui);
         }
 
-        public string StrMulti(string str, int mult) 
-        {
-            string multstr = "";
-            for (int i = 0; i <=mult; i++)
-            {
-                multstr += str;
-            }
-
-            return multstr;
-        }
 
 
         public Point ConsoleInput()
         {
-            string[] s =  Console.ReadLine().Split(',');
+            string[] s = Console.ReadLine().Split(',');
             return new Point(int.Parse(s[0]), int.Parse(s[1]));
 
         }
 
-        public bool Select(Point p)
+        public bool Select(Point p)//выбор фигуры
         {
             int count = 0;
             ChessPiece chP = _field.GetChP(p);
@@ -141,8 +130,9 @@ namespace Classes
 
         }
 
-        public bool Action(Point p)
+        public bool Action(Point p)//перемещение фигуры
         {
+            bool kingDead = true;
 
             if (_activeChP.Item1 == null || _activeChP.Item2[p.y,p.x] == 0)
             {
@@ -161,6 +151,7 @@ namespace Classes
 
                 case TypeMove.Attack:
                     Attack(_activeChP.Item1,p, chP);
+                    kingDead = (chP.ChPType == ChPType.King ? true : false);
                     break;
 
             }
@@ -184,7 +175,7 @@ namespace Classes
 
         }
 
-        private void EditMoves(ChessPiece thisChP, IEnumerable<IEnumerable<(Point, TypeMove)>> list)
+        private void EditMoves(ChessPiece thisChP, IEnumerable<IEnumerable<(Point, TypeMove)>> list)//добавление учета других фигур на доске в передвижениях фигуры
         {
             foreach (var line in list)
             {
@@ -220,7 +211,8 @@ namespace Classes
 
         }
 
-        private void SecurityCheckChP(ChessPiece thisChP,IEnumerable<IEnumerable<(Point, TypeMove)>> list)
+        private void SecurityCheckChP(ChessPiece thisChP,IEnumerable<IEnumerable<(Point, TypeMove)>> list)//учитывает опасности для короля, для блокирования ходов
+                                                                                                          //после которых король окажется под шахом из-за данной фигуры
         {
             foreach (var line in list)
             {
@@ -257,13 +249,13 @@ namespace Classes
                                     {
                                         if (interval.Item1 != null)//между атакующей фигурой и королем есть еще одная фигура, защищающая короля
                                         {
-                                            _protectKing[interval.Item1] = interval.Item2;
+                                            _protectKing[interval.Item1] = interval.Item2;//сохранение защищающей фигуры
                                             break;
                                         }
                                     else //непосредственная угроза королю
                                         {
                                             check = true;
-                                            _checkLines.Add(interval.Item2);
+                                            _checkLines.Add(interval.Item2);//добавление отрезков между угрожающей фигурой(включительно) и королем
                                         }
 
                                     }
@@ -278,7 +270,7 @@ namespace Classes
 
                             else
                             {
-                                _unsafeCell[p.y, p.x] = true;
+                                _unsafeCell[p.y, p.x] = true;//учет не безопасных для короля клеток
                                 break;
                             }
 
@@ -295,7 +287,7 @@ namespace Classes
 
         }
 
-        private void SecurityCheckAll()
+        private void SecurityCheckAll()//проверка всех вражеских фигур на предмет опасности для короля
         {
             _protectKing = new Dictionary<ChessPiece, List<Point>>();
             _checkLines = new List<List<Point>>();
@@ -317,7 +309,7 @@ namespace Classes
 
 
 
-        static private IEnumerator<PlayerSide> TurnToGo ()
+        static private IEnumerator<PlayerSide> TurnToGo ()//определение очереди стороны
         {
             while (true)
             {
@@ -329,7 +321,7 @@ namespace Classes
 
         }
 
-        private bool AccessChP(ChessPiece chP)
+        private bool AccessChP(ChessPiece chP)//определяет, есть ли фигура на клетке и соответствует ли она очереди
         {
             PlayerSide side = (PlayerSide)_turn.Current;
 
@@ -347,33 +339,33 @@ namespace Classes
 
         }
 
-        private bool AccessCell(Point p,ChessPiece chP)
+        private bool AccessCell(Point p,ChessPiece chP)//определяет безопасен ли данный ход для короля
         {
             bool access = true;
             int lenCheckLines = (_checkLines != null ? _checkLines.Count : 0);
 
 
-            if (chP.ChPType == ChPType.King)
+            if (chP.ChPType == ChPType.King)//фигура - король
             {
-                access = !_unsafeCell[p.y, p.x];              
+                access = !_unsafeCell[p.y, p.x];//клетка безопасна
             }
 
-            else if (lenCheckLines < 2)
+            else if (lenCheckLines < 2)//меньше двух шахов
             {
-                if (lenCheckLines == 1)
+                if (lenCheckLines == 1)//один шах
                 {
-                    access = InInterval(p, _checkLines[0]);
+                    access = InInterval(p, _checkLines[0]);//если между королем и урожающей фигурой(включительно) есть данная клетка, то true
                 }
 
-                else if (_protectKing != null && _protectKing.ContainsKey(chP))
+                else if (_protectKing != null && _protectKing.ContainsKey(chP))//защищает ли данная фигура короля
                 {
-                    access = InInterval(p, _protectKing[chP]);
+                    access = InInterval(p, _protectKing[chP]);//если между королем и урожающей фигурой(включительно) есть данная клетка, то true
                 }
 
 
             }
 
-            else 
+            else//фигура не является королем шахов больше двух
                 access = false;
 
 
@@ -385,7 +377,7 @@ namespace Classes
         {
             foreach (Point i in interval)
             {
-                    if (p.y == i.y && p.x==i.x)
+                if (p.y == i.y && p.x==i.x)
                 {
                     return true;
                 }
