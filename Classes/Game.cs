@@ -11,11 +11,9 @@ namespace Classes
         private Field _field;
         private (ChessPiece, TypeMove[,]) _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
         private IEnumerator _turn = TurnToGo();
-        private bool _check = false;
         private Dictionary<ChessPiece, List<Point>> _protectKing;
         private List<List<Point>> _checkLines;
         private bool[,] _unsafeCell = new bool[Field.maxY, Field.maxX];
-        private string GUI="";
         public Game(Field f)
         {
             _field = f;
@@ -377,7 +375,7 @@ namespace Classes
         {
             foreach (Point i in interval)
             {
-                if (p.y == i.y && p.x==i.x)
+                if (p==i)
                 {
                     return true;
                 }
@@ -387,6 +385,29 @@ namespace Classes
 
             
         }
+
+        private bool VictoryCheck()
+        {
+            int count = 0;
+
+            for (int y = 0; y < Field.maxY; y++)
+            {
+                for (int x = 0; x < Field.maxY; x++)
+                {
+                    ChessPiece chP = _field.GetChP(new Point(y, x));
+                    if (chP != null && chP.Side == (PlayerSide)_turn.Current)
+                    {
+                        SecurityCheckChP(chP, chP.GetMoves());
+                    }
+
+                }
+
+            }
+
+            return true;
+
+        }
+
 
     }
 
