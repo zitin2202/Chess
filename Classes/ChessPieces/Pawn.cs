@@ -11,16 +11,15 @@ namespace Classes
     {
         public Pawn(Point p, PlayerSide side) : base(p, side)
         {
-            int yDirect = (Side == PlayerSide.First ? -1 : 1);
-            directionPoints[0] = new Point(yDirect, 0);
-            directionPoints[1] = new Point(yDirect, 1);
-            directionPoints[2] = new Point(yDirect, -1);
+            yDirect = (Side == PlayerSide.First ? -1 : 1);
+
 
     }
 
         public override ChPType ChPType => ChPType.Pawn;
 
-        public Point[] directionPoints => new Point[3];
+        int yDirect;
+        public Point[] directionPoints => new Point[3] { new Point(yDirect, 0), new Point(yDirect, 1), new Point(yDirect, -1) };
 
         public override IEnumerable<IEnumerable<(Point, TypeMove)>> GetMoves()
         {

@@ -12,6 +12,7 @@ namespace Classes
         private (ChessPiece, TypeMove[,]) _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
         private IEnumerator _turn = TurnToGo();
         private Dictionary<ChessPiece, List<Point>> _protectKing;
+        private Dictionary<ChessPiece, List<(Point,TypeMove)>> _allMovesPoints;
         private List<List<Point>> _checkLines;
         private bool[,] _unsafeCell = new bool[Field.maxY, Field.maxX];
         public Game(Field f)
@@ -25,6 +26,11 @@ namespace Classes
             {
                 _turn.MoveNext();
                 SecurityCheckAll();
+                if (!allPossibleMoves())
+                {
+                    Victory();
+                    break;
+                }
                 _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
                 ConsoleFieldGUI();
                 Console.WriteLine($"Очередь игрока: {_turn.Current}");
@@ -101,23 +107,19 @@ namespace Classes
 
             Console.WriteLine((chP.Side, chP.ChPType));
 
-            EditMoves(chP,chP.GetMoves());
-
-            for (int y = 0; y<Field.maxY;y++)
+            if (_allMovesPoints[chP].Count>0)
             {
-                for (int x = 0; x <Field.maxY; x++)
+                foreach (var i in _allMovesPoints[chP])
                 {
-                    if (_activeChP.Item2[y, x] !=0 )
-                    {
-                        ChessPiece targetChP = _field.GetChP(new Point(y, x));
-                        Console.WriteLine($"{(y, x)}: {((targetChP == null ? "Пусто" : targetChP.ChPType.ToString()), _activeChP.Item2[y, x])}");
-                        count++;
-                    }
+                    int y = i.Item1.y;
+                    int x = i.Item1.x;
 
+                    _activeChP.Item2[y,x] = i.Item2;
+                    Console.WriteLine($"{(y, x)}: {(_field.GetChP(i.Item1) == null ? "Пусто" : i.Item1)}, {i.Item2}");
                 }
-
             }
-            if (count==0)
+
+            else
             {
                 Console.WriteLine("У этой фигуры нет возможных ходов");
                 return false;
@@ -130,9 +132,8 @@ namespace Classes
 
         public bool Action(Point p)//перемещение фигуры
         {
-            bool kingDead = true;
 
-            if (_activeChP.Item1 == null || _activeChP.Item2[p.y,p.x] == 0)
+            if (_activeChP.Item2[p.y,p.x] == 0)
             {
                 Console.WriteLine("Вы не можете походить сюда");
                 return false;
@@ -149,7 +150,6 @@ namespace Classes
 
                 case TypeMove.Attack:
                     Attack(_activeChP.Item1,p, chP);
-                    kingDead = (chP.ChPType == ChPType.King ? true : false);
                     break;
 
             }
@@ -173,8 +173,9 @@ namespace Classes
 
         }
 
-        private void EditMoves(ChessPiece thisChP, IEnumerable<IEnumerable<(Point, TypeMove)>> list)//добавление учета других фигур на доске в передвижениях фигуры
+        private List<(Point, TypeMove)> EditMoves(ChessPiece thisChP, IEnumerable<IEnumerable<(Point, TypeMove)>> list)//добавление учета других фигур на доске в передвижениях фигуры
         {
+            List<(Point, TypeMove)> movesPoints = new List<(Point,TypeMove)>();
             foreach (var line in list)
             {
                 foreach (var i in line)
@@ -188,17 +189,17 @@ namespace Classes
 
                     if (cellChP == null && type != TypeMove.Attack) //на клетке нету фигуры и можно походить без атаки                     
                             result = TypeMove.Simple;
-                    
-                    else if (cellChP != null) //на клетке есть фигура
-                    {
-                        if (thisChP.Side != cellChP.Side && type != TypeMove.Simple)//фигура вражеская и данным ходом можно атаковать
-                            result = TypeMove.Attack;
-                        else
-                            break;
-                    }
 
-                    if (AccessCell(p, thisChP))
-                        _activeChP.Item2[p.y, p.x] = result;
+                    //на клетке есть вражеская и данным ходом можно атаковать
+                    else if (cellChP != null && thisChP.Side != cellChP.Side && type != TypeMove.Simple)
+                    {
+                        result = TypeMove.Attack;                      
+                    }
+                    else
+                        break;
+
+                    if (result!=0 && AccessCell(p, thisChP))
+                        movesPoints.Add((p, result));
 
                     if (result == TypeMove.Attack)
                         break;                 
@@ -207,10 +208,12 @@ namespace Classes
 
             }
 
+            return movesPoints;
+
         }
 
-        private void SecurityCheckChP(ChessPiece thisChP,IEnumerable<IEnumerable<(Point, TypeMove)>> list)//учитывает опасности для короля, для блокирования ходов
-                                                                                                          //после которых король окажется под шахом из-за данной фигуры
+        ///определяет, какие ходы опасны для короля, какие фигуры защищают короля(и их передвижение ограничено), и какие фигуры поставили шах
+        private void SecurityCheckChP(ChessPiece thisChP,IEnumerable<IEnumerable<(Point, TypeMove)>> list)
         {
             foreach (var line in list)
             {
@@ -247,7 +250,7 @@ namespace Classes
                                     {
                                         if (interval.Item1 != null)//между атакующей фигурой и королем есть еще одная фигура, защищающая короля
                                         {
-                                            _protectKing[interval.Item1] = interval.Item2;//сохранение защищающей фигуры
+                                            _protectKing[interval.Item1] = interval.Item2;//сохранение защищающей фигуры с интервалом, в котором она может передвигаться
                                             break;
                                         }
                                     else //непосредственная угроза королю
@@ -363,7 +366,7 @@ namespace Classes
 
             }
 
-            else//фигура не является королем шахов больше двух
+            else//фигура не является королем и шахов больше двух, то сделать она ничего не сможет
                 access = false;
 
 
@@ -386,8 +389,9 @@ namespace Classes
             
         }
 
-        private bool VictoryCheck()
+        private bool allPossibleMoves()
         {
+            _allMovesPoints = new Dictionary<ChessPiece, List<(Point, TypeMove)>>();
             int count = 0;
 
             for (int y = 0; y < Field.maxY; y++)
@@ -397,15 +401,26 @@ namespace Classes
                     ChessPiece chP = _field.GetChP(new Point(y, x));
                     if (chP != null && chP.Side == (PlayerSide)_turn.Current)
                     {
-                        SecurityCheckChP(chP, chP.GetMoves());
+                        _allMovesPoints[chP] = EditMoves(chP, chP.GetMoves());
+                        count += _allMovesPoints[chP].Count;
                     }
 
                 }
 
             }
 
-            return true;
+            if (count > 0)
+                return true;
+            else
+                return false;
 
+        }
+
+        private void Victory()
+        {
+            _turn.MoveNext();
+            PlayerSide victorySide = (PlayerSide)_turn.Current;
+            Console.WriteLine($"Шах и мат! Победила сторона {victorySide}!"); ;
         }
 
 

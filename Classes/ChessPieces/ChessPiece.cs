@@ -47,7 +47,7 @@ namespace Classes
             }
         }
             
-        protected IEnumerable<IEnumerable<(Point, TypeMove)>>  FormingMove(int lenMoves,  params Point[] directions) //формирует набор из линий. Для пешки метод не применяется
+        protected IEnumerable<IEnumerable<(Point, TypeMove)>>  FormingMove(int lenMoves, Point[] directions) //формирует набор из линий. Для пешки метод не применяется
         {
 
             foreach (var direction in directions)

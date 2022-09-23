@@ -8,7 +8,7 @@ namespace Classes.ChessPieces
     public interface SaveDirectionPoints
     {
 
-        Point[] directionPoints { get; }
+        Point[] directionPoints { get;}
 
 
     }
