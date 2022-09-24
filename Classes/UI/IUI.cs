@@ -6,7 +6,8 @@ namespace Classes
 {
     interface IUI
     {
-        public Game game { get; }
+        public Game _game { get; }
+
         public void FieldRender();
 
         public void TurnReport();

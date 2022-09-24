@@ -6,7 +6,13 @@ namespace Classes
 {
     class ConsoleUI : IUI
     {
-        public Game game => throw new NotImplementedException();
+        Game IUI._game => 
+
+        ConsoleUI(Game game)
+        {
+            _game = game;
+        }
+
 
         public void FieldRender()
         {
@@ -25,7 +31,7 @@ namespace Classes
 
         public void TurnReport()
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Очередь игрока: {_game._turn.Current}");
         }
 
         public void VictoryReport()

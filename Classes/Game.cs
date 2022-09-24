@@ -12,6 +12,7 @@ namespace Classes
         public IEnumerator _turn = TurnToGo();
         private Dictionary<ChessPiece, List<(Point, TypeMove)>> _allMovesPoints;
         private ControlRule _rule;
+        private IUI UI = new ConsoleUI(this);
 
 
         public Game(Field f)
@@ -33,7 +34,6 @@ namespace Classes
                 }
                 _rule._activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
                 ConsoleFieldGUI();
-                Console.WriteLine($"Очередь игрока: {_turn.Current}");
 
                 while (!Select(ConsoleInput("фигуру")))
                 {
