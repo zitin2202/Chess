@@ -4,20 +4,78 @@ using System.Text;
 
 namespace Classes
 {
-    class ConsoleUI : IUI
+    public class ConsoleUI : IUI
     {
-        Game IUI._game => 
+        public Game Game { get; set; }
 
-        ConsoleUI(Game game)
+        public ConsoleUI(Game game)
         {
-            _game = game;
+            Game = game;
         }
 
 
         public void FieldRender()
         {
-            throw new NotImplementedException();
+
+            string fieldGui = "  ";
+
+            for (int x = 0; x < Field.maxX; x++)
+            {
+                fieldGui += $"{x}  ";
+            }
+            fieldGui += "\n";
+
+
+            for (int y = 0; y < Field.maxY; y++)
+            {
+
+                for (int x = 0; x < Field.maxX; x++)
+                {
+                    ChessPiece chP = Game._field.GetChP(new Point(y, x));
+
+                    fieldGui += $"{(x == 0 ? $"{y} " : "")}{(chP == null ? "  " : chP.Side.ToString()[0].ToString() + chP.ChPType.ToString()[0].ToString())} ";
+
+
+
+                }
+                fieldGui += "\n";
+
+
+
+            }
+            Console.WriteLine(fieldGui);
+
         }
+
+        public void TurnReport()
+        {
+            Console.WriteLine($"Очередь игрока: {Game._turn.Current}");
+        }
+
+        public Point СellSelection()
+        {
+            string[] s;
+            int[] p;
+            do
+            {
+                Console.WriteLine($"Выберите {str}");
+                s = Console.ReadLine().Split(",");
+
+            }
+            while (!Exception.ConsoleInputValidation(s, out p));
+
+
+
+            return new Point(p[0], p[1]);
+        }
+
+        void NotChessPieceReport();
+
+        void NotChessМoveReport();
+
+        void VictoryReport();
+
+       
 
         public void NotChessPieceReport()
         {
@@ -29,19 +87,15 @@ namespace Classes
             throw new NotImplementedException();
         }
 
-        public void TurnReport()
-        {
-            Console.WriteLine($"Очередь игрока: {_game._turn.Current}");
-        }
+       
+
+        
 
         public void VictoryReport()
         {
             throw new NotImplementedException();
         }
 
-        public void СellSelection()
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

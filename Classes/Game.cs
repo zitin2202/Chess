@@ -12,13 +12,14 @@ namespace Classes
         public IEnumerator _turn = TurnToGo();
         private Dictionary<ChessPiece, List<(Point, TypeMove)>> _allMovesPoints;
         private ControlRule _rule;
-        private IUI UI = new ConsoleUI(this);
+        private IUI UI;
 
 
         public Game(Field f)
         {
             _field = f;
             _rule = new ControlRule(this);
+            UI = new ConsoleUI(this);
         }
 
         public void Start()
@@ -33,8 +34,8 @@ namespace Classes
                     break;
                 }
                 _rule._activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
-                ConsoleFieldGUI();
-
+                UI.FieldRender();
+                UI.TurnReport();
                 while (!Select(ConsoleInput("фигуру")))
                 {
 
@@ -47,56 +48,11 @@ namespace Classes
 
             }
         }
-        public void ConsoleFieldGUI()//временная функция вывода поля в консоли
-        {
-            string fieldGui = "  ";
-
-            for (int x = 0; x < Field.maxX; x++)
-            {
-                fieldGui += $"{x}  ";
-            }
-            fieldGui += "\n";
-
-
-            for (int y = 0; y < Field.maxY; y++)
-            {
-
-                for (int x = 0; x < Field.maxX; x++)
-                {
-                    ChessPiece chP = _field.GetChP(new Point(y, x));
-
-                    fieldGui += $"{(x==0? $"{y} " : "")}{(chP == null ? "  " : chP.Side.ToString()[0].ToString() + chP.ChPType.ToString()[0].ToString())} ";
 
 
 
-                }
-                fieldGui += "\n";
 
 
-
-            }
-            Console.WriteLine(fieldGui);
-        }
-
-
-
-        public Point ConsoleInput(string str)
-        {
-            string[] s;
-            int[] p;
-            do
-            {
-                Console.WriteLine($"Выберите {str}");
-                s = Console.ReadLine().Split(",");
-
-            }
-            while (!Exception.ConsoleInputValidation(s,out p));
-
-            
-
-            return new Point(p[0], p[1]);
-
-        }
 
         public bool Select(Point p)//выбор фигуры
         {

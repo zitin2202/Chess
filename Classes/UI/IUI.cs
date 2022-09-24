@@ -4,21 +4,21 @@ using System.Text;
 
 namespace Classes
 {
-    interface IUI
+    public interface IUI
     {
-        public Game _game { get; }
+        Game Game { get; }
 
-        public void FieldRender();
+        void FieldRender();
 
-        public void TurnReport();
+        void TurnReport();
 
-        public void СellSelection();
+        ChessPiece СellSelection();
 
-        public void NotChessPieceReport();
+        void NotChessPieceReport();
 
-        public void NotChessМoveReport();
+        void NotChessМoveReport();
 
-        public void VictoryReport();
+        void VictoryReport();
 
     }
 }
