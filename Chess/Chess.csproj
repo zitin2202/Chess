@@ -14,7 +14,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Classes\Classes.csproj" />
     <ProjectReference Include="..\Enums\Enums.csproj" />
-    <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
     <ProjectReference Include="..\TestChess\TestChess.csproj" />
   </ItemGroup>
 

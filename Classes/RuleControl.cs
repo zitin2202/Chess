@@ -7,7 +7,7 @@ namespace Classes
 {
     public class RuleControl
     {
-        private (ChessPiece, TypeMove[,]) _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
+        public (ChessPiece, TypeMove[,]) _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
         private bool[,] _unsafeCell = new bool[Field.maxY, Field.maxX];
         private Dictionary<ChessPiece, List<Point>> _protectKing;
         private List<List<Point>> _checkLines;
@@ -116,7 +116,7 @@ namespace Classes
 
         public bool AccessChP(ChessPiece chP)//определяет, есть ли фигура на клетке и соответствует ли она очереди
         {
-            PlayerSide side = (PlayerSide)_turn.Current;
+            PlayerSide side = (PlayerSide)_game._turn.Current;
 
             if (chP != null && chP.Side == side)
             {

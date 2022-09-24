@@ -6,7 +6,7 @@ using Enums;
 using Classes.ChessPieces;
 namespace Classes
 {
-    public class Rook : ChessPiece, SaveDirectionPoints
+    public class Rook : ChessPiece, ISaveDirectionPoints
     {
         public Rook(Point p, PlayerSide side) : base(p,side)
         {

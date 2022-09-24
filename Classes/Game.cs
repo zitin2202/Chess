@@ -31,23 +31,19 @@ namespace Classes
                     Victory();
                     break;
                 }
-                _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
+                _rule._activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
                 ConsoleFieldGUI();
                 Console.WriteLine($"Очередь игрока: {_turn.Current}");
-                do
+
+                while (!Select(ConsoleInput("фигуру")))
                 {
-                    Console.WriteLine("Выберите фигуру");
+
                 }
-                while (!Select(ConsoleInput()));
-                do
+
+                while (!Action(ConsoleInput("координаты")))
                 {
-                    Console.WriteLine("Выберите координаты");
+
                 }
-                while (!Action(ConsoleInput()));
-
-
-
-
 
             }
         }
@@ -84,10 +80,21 @@ namespace Classes
 
 
 
-        public Point ConsoleInput()
+        public Point ConsoleInput(string str)
         {
-            string[] s = Console.ReadLine().Split(',');
-            return new Point(int.Parse(s[0]), int.Parse(s[1]));
+            string[] s;
+            int[] p;
+            do
+            {
+                Console.WriteLine($"Выберите {str}");
+                s = Console.ReadLine().Split(",");
+
+            }
+            while (!Exception.ConsoleInputValidation(s,out p));
+
+            
+
+            return new Point(p[0], p[1]);
 
         }
 
@@ -95,7 +102,7 @@ namespace Classes
         {
             int count = 0;
             ChessPiece chP = _field.GetChP(p);
-            if (!AccessChP(chP))
+            if (!_rule.AccessChP(chP))
             {
                 Console.WriteLine("Здесь нету фигуры, которую вы могли бы взять, выберите другую");
                 return false;
@@ -103,7 +110,7 @@ namespace Classes
             }
           
 
-            _activeChP.Item1 = chP;
+            _rule._activeChP.Item1 = chP;
 
             Console.WriteLine((chP.Side, chP.ChPType));
 
@@ -114,7 +121,7 @@ namespace Classes
                     int y = i.Item1.y;
                     int x = i.Item1.x;
 
-                    _activeChP.Item2[y,x] = i.Item2;
+                    _rule._activeChP.Item2[y,x] = i.Item2;
                     Console.WriteLine($"{(y, x)}: {(_field.GetChP(i.Item1) == null ? "Пусто" : i.Item1)}, {i.Item2}");
                 }
             }
@@ -132,8 +139,9 @@ namespace Classes
 
         public bool Action(Point p)//перемещение фигуры
         {
+            var active = _rule._activeChP;
 
-            if (_activeChP.Item2[p.y,p.x] == 0)
+            if (!Exception.ValidationCell(p) || active.Item2[p.y,p.x] == 0)
             {
                 Console.WriteLine("Вы не можете походить сюда");
                 return false;
@@ -142,19 +150,19 @@ namespace Classes
 
             ChessPiece chP = _field.GetChP(p);
 
-            switch (_activeChP.Item2[p.y, p.x])
+            switch (active.Item2[p.y, p.x])
             {
                 case TypeMove.Simple:
-                    Move(_activeChP.Item1,p);
+                    Move(active.Item1,p);
                     break;
 
                 case TypeMove.Attack:
-                    Attack(_activeChP.Item1,p, chP);
+                    Attack(active.Item1,p, chP);
                     break;
 
             }
-            _field.SetChP(_activeChP.Item1._p, null);
-            _field.SetChP(p, _activeChP.Item1);
+            _field.SetChP(active.Item1._p, null);
+            _field.SetChP(p, active.Item1);
 
 
             return true;
@@ -198,7 +206,7 @@ namespace Classes
                     else
                         break;
 
-                    if (result!=0 && AccessCell(p, thisChP))
+                    if (result!=0 && _rule.AccessCell(p, thisChP))
                         movesPoints.Add((p, result));
 
                     if (result == TypeMove.Attack)
@@ -221,8 +229,6 @@ namespace Classes
                 yield return PlayerSide.First;
                 yield return PlayerSide.Second;
             }
-
-
 
         }
 

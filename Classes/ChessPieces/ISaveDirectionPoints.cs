@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Classes.ChessPieces
 {
-    public interface SaveDirectionPoints
+    public interface ISaveDirectionPoints
     {
 
         Point[] directionPoints { get;}

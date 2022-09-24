@@ -27,21 +27,32 @@ namespace Classes
 
 
         }
-        public void SetChP (Point p, ChessPiece chP)
+        public bool SetChP (Point p, ChessPiece chP)
         {
-            _cells[p.y, p.x] = chP;
-
-            if (chP != null)
+            if (Exception.ValidationCell(p))
             {
-                chP._p = p;
-                chP.StartPosition = false;
+                _cells[p.y, p.x] = chP;
+
+                if (chP != null)
+                {
+                    chP._p = p;
+                    chP.StartPosition = false;
+                }
             }
+
+            return false;
+
                 
         }
 
-        public ChessPiece GetChP(Point p)
+        public  ChessPiece GetChP(Point p)
         {
-            return _cells[p.y, p.x];
+            if (Exception.ValidationCell(p))
+            {
+                return _cells[p.y, p.x];
+            }
+
+            return null;
         }
 
 

@@ -7,7 +7,7 @@ using Enums;
 
 namespace Classes
 {
-    public class Pawn : ChessPiece, SaveDirectionPoints
+    public class Pawn : ChessPiece, ISaveDirectionPoints
     {
         public Pawn(Point p, PlayerSide side) : base(p, side)
         {

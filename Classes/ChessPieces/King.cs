@@ -5,7 +5,7 @@ using Classes.ChessPieces;
 using Enums;
 namespace Classes
 {
-    public class King : ChessPiece, SaveDirectionPoints
+    public class King : ChessPiece, ISaveDirectionPoints
     {
         public King(Point p, PlayerSide side) : base(p, side)
         {

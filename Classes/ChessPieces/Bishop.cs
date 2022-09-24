@@ -6,7 +6,7 @@ using Classes.ChessPieces;
 using Enums;
 namespace Classes
 {
-    public class Bishop : ChessPiece, SaveDirectionPoints
+    public class Bishop : ChessPiece, ISaveDirectionPoints
     {
         public Bishop(Point p, PlayerSide side) : base(p, side)
         {
