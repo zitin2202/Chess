@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Classes
 {
-    public class RuleControl
+    public class ControlRule
     {
         public (ChessPiece, TypeMove[,]) _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
         private bool[,] _unsafeCell = new bool[Field.maxY, Field.maxX];
@@ -14,7 +14,7 @@ namespace Classes
         private Game _game;
 
 
-        public RuleControl(Game game )
+        public ControlRule(Game game )
         {
             _game = game;
         }

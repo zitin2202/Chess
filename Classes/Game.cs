@@ -11,13 +11,13 @@ namespace Classes
         public Field _field;
         public IEnumerator _turn = TurnToGo();
         private Dictionary<ChessPiece, List<(Point, TypeMove)>> _allMovesPoints;
-        private RuleControl _rule;
+        private ControlRule _rule;
 
 
         public Game(Field f)
         {
             _field = f;
-            _rule = new RuleControl(this);
+            _rule = new ControlRule(this);
         }
 
         public void Start()
