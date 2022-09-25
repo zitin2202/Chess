@@ -15,14 +15,24 @@ namespace Classes
 
         public  Point[] directionPoints => new Point[] {new Point(1, 0), new Point(-1, 0),
                 new Point(0, 1), new Point(0, -1), new Point(1, 1),
-                new Point(1, -1), new Point(-1, 1), new Point(-1, -1)};
+                new Point(1, -1), new Point(-1, 1), new Point(-1, -1),new Point(0,2),new Point(0,-2)};
 
 
         private int lenMove = 1;
 
         public override IEnumerable<IEnumerable<(Point, TypeMove)>> GetMoves()
         {
-            return FormingMove(lenMove, directionPoints);
+            for (int i = 0; i < 8; i++)
+            {
+                yield return PartOfMove(directionPoints[i], lenMove);
+
+            }
+            for (int i = 8; i < directionPoints.Length; i++)
+            {
+                yield return PartOfMove(directionPoints[i], lenMove,TypeMove.Сastling);
+
+            }
+
         }
     }
 }

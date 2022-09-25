@@ -7,7 +7,6 @@ namespace Classes
 {
     public class ControlRule
     {
-        public (ChessPiece, TypeMove[,]) _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
         private bool[,] _unsafeCell = new bool[Field.maxY, Field.maxX];
         private Dictionary<ChessPiece, List<Point>> _protectKing;
         private List<List<Point>> _checkLines;
@@ -163,6 +162,50 @@ namespace Classes
 
             return access;
 
+        }
+
+
+        public bool AccessCastling(ChessPiece king, Point targetP)
+        {
+            int shift = CastlingShift(king, targetP);
+
+            int direction = Math.Sign(shift);
+
+            ChessPiece targetCell = _game._field.GetChP(new Point(king._p.y, king._p.x + shift));
+            if (targetCell != null && targetCell.ChPType == ChPType.Rook && king.StartPosition && targetCell.StartPosition)
+            {
+                Point cell;
+                for (int i = 1; i < Math.Abs(shift); i++)
+                {
+                    cell = new Point(king._p.y, king._p.x + i * direction);
+                    if (_game._field.GetChP(cell)!=null || _unsafeCell[cell.y,cell.x])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        public int CastlingShift(ChessPiece king, Point targetP)
+        {
+            int shift;
+
+            if (targetP.x > king._p.x)
+            {
+                shift = 3;
+            }
+            else
+            {
+                shift = -4;
+            }
+
+            return shift;
         }
 
 

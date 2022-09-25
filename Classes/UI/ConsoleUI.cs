@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -54,11 +55,12 @@ namespace Classes
 
         public Point СellSelection()
         {
+            string message = (Game._activeChP.Item1 == null ? "Выберите фигуру" : "Сделайте ход");
             string[] s;
-            int[] p;
+            Point p;
             do
             {
-                Console.WriteLine($"Выберите {str}");
+                Console.WriteLine(message);
                 s = Console.ReadLine().Split(",");
 
             }
@@ -66,34 +68,60 @@ namespace Classes
 
 
 
-            return new Point(p[0], p[1]);
+            return p;
         }
 
-        void NotChessPieceReport();
 
-        void NotChessМoveReport();
-
-        void VictoryReport();
-
-       
 
         public void NotChessPieceReport()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Здесь нету фигуры, которую вы могли бы взять, выберите другую");
+        }
+
+        public void SelectedСhessPiece(ChessPiece chP)
+        {
+            Console.WriteLine((chP.Side, chP.ChPType));
+        }
+
+        public void PossibleMove(Point p, TypeMove type)
+        {
+            ChessPiece targetChP = Game._field.GetChP(p);
+            Console.WriteLine($"{(p.y,p.x)}: {( targetChP == null ? "Пусто" : targetChP.ChPType)}, {type}");
         }
 
         public void NotChessМoveReport()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("У этой фигуры нет возможных ходов");
         }
 
-       
-
-        
-
-        public void VictoryReport()
+        public void HaventSuchMove()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Вы не можете походить сюда");
+        }
+
+        public void SimpleMove(ChessPiece thisChP, Point targetP)
+        {
+            Console.WriteLine($"{thisChP.Side} {(thisChP._p.y, thisChP._p.x)}: {thisChP.ChPType} идет на {(targetP.y, targetP.x)}");
+
+        }
+
+        public void Attack(ChessPiece thisChP, Point targetP, ChessPiece targetChP)
+        {
+            Console.WriteLine($"{thisChP.Side} {(thisChP._p.y, thisChP._p.x)}: {thisChP.ChPType} съел {targetChP.ChPType} на {(targetP.y, targetP.x)}");
+        }
+
+        public void Сastling(ChessPiece thisChP, Point targetP, ChessPiece targetChP)
+        {
+            string castlingType = (Game._rule.CastlingShift(thisChP, targetP) > 0 ? "короткую" : "длинную");
+
+            Console.WriteLine($"{thisChP.Side} {(thisChP._p.y, thisChP._p.x)}: совершает {castlingType} рокировку");
+
+
+        }
+
+        public void Victory(PlayerSide victorySide)
+        {
+            Console.WriteLine($"Шах и мат! Победила сторона {victorySide}!");
         }
 
 

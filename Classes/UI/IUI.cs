@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,13 +13,25 @@ namespace Classes
 
         void TurnReport();
 
-        ChessPiece СellSelection();
+        Point СellSelection();
 
         void NotChessPieceReport();
 
+        void SelectedСhessPiece(ChessPiece chP);
+
+        void PossibleMove(Point p, TypeMove type);
+
         void NotChessМoveReport();
 
-        void VictoryReport();
+        void HaventSuchMove();
+ 
+        void SimpleMove(ChessPiece thisChP,Point targetP);
+
+        void Attack(ChessPiece thisChP, Point targetP, ChessPiece targetChP);
+
+        void Сastling(ChessPiece thisChP, Point targetP, ChessPiece targetChP);
+
+        void Victory(PlayerSide victorySide);
 
     }
 }

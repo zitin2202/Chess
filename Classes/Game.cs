@@ -9,9 +9,10 @@ namespace Classes
     public class Game
     {
         public Field _field;
+        public ControlRule _rule;
         public IEnumerator _turn = TurnToGo();
+        public (ChessPiece, TypeMove[,]) _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
         private Dictionary<ChessPiece, List<(Point, TypeMove)>> _allMovesPoints;
-        private ControlRule _rule;
         private IUI UI;
 
 
@@ -24,24 +25,25 @@ namespace Classes
 
         public void Start()
         {
+            _turn.MoveNext();
+
             while (true)
             {
-                _turn.MoveNext();
                 _rule.SecurityCheckAll();
                 if (!allPossibleMoves())
                 {
                     Victory();
                     break;
                 }
-                _rule._activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
+                _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
                 UI.FieldRender();
                 UI.TurnReport();
-                while (!Select(ConsoleInput("фигуру")))
+                while (!Select(UI.СellSelection()))
                 {
 
                 }
 
-                while (!Action(ConsoleInput("координаты")))
+                while (!Action(UI.СellSelection()))
                 {
 
                 }
@@ -60,15 +62,15 @@ namespace Classes
             ChessPiece chP = _field.GetChP(p);
             if (!_rule.AccessChP(chP))
             {
-                Console.WriteLine("Здесь нету фигуры, которую вы могли бы взять, выберите другую");
+                UI.NotChessPieceReport();
                 return false;
 
             }
           
 
-            _rule._activeChP.Item1 = chP;
+            _activeChP.Item1 = chP;
 
-            Console.WriteLine((chP.Side, chP.ChPType));
+            UI.SelectedСhessPiece(chP);
 
             if (_allMovesPoints[chP].Count>0)
             {
@@ -77,14 +79,14 @@ namespace Classes
                     int y = i.Item1.y;
                     int x = i.Item1.x;
 
-                    _rule._activeChP.Item2[y,x] = i.Item2;
-                    Console.WriteLine($"{(y, x)}: {(_field.GetChP(i.Item1) == null ? "Пусто" : i.Item1)}, {i.Item2}");
+                    _activeChP.Item2[y,x] = i.Item2;
+                    UI.PossibleMove(i.Item1,i.Item2);
                 }
             }
 
             else
             {
-                Console.WriteLine("У этой фигуры нет возможных ходов");
+                UI.NotChessМoveReport();
                 return false;
 
             }
@@ -95,30 +97,35 @@ namespace Classes
 
         public bool Action(Point p)//перемещение фигуры
         {
-            var active = _rule._activeChP;
+            var active = _activeChP;
 
-            if (!Exception.ValidationCell(p) || active.Item2[p.y,p.x] == 0)
+            if (active.Item2[p.y,p.x] == 0)
             {
-                Console.WriteLine("Вы не можете походить сюда");
+                UI.HaventSuchMove();
                 return false;
 
             }
 
-            ChessPiece chP = _field.GetChP(p);
+            ChessPiece targetChP = _field.GetChP(p);
 
             switch (active.Item2[p.y, p.x])
             {
                 case TypeMove.Simple:
-                    Move(active.Item1,p);
+                    Move(active.Item1, p);
+                    UI.SimpleMove(active.Item1,p);
                     break;
 
                 case TypeMove.Attack:
-                    Attack(active.Item1,p, chP);
+                    Move(active.Item1, p);
+                    UI.Attack(active.Item1,p, targetChP);
+                    break;
+
+                case TypeMove.Сastling:
+                    Сastling(active.Item1, p);
                     break;
 
             }
-            _field.SetChP(active.Item1._p, null);
-            _field.SetChP(p, active.Item1);
+            
 
 
             return true;
@@ -126,16 +133,26 @@ namespace Classes
 
         }
 
-        private void Move(ChessPiece myChP, Point targP)
+        private void Move(ChessPiece chP, Point p)
         {
-            Console.WriteLine($"{myChP.Side} {(myChP._p.y, myChP._p.x)}: {myChP.ChPType} идет на {(targP.y, targP.x)}");
+            _field.SetChP(chP._p, null);
+            _field.SetChP(p, chP);
+        }
+
+        private void Сastling(ChessPiece king, Point p)
+        {
+            int shift = _rule.CastlingShift(king,p);
+            ChessPiece rook;
+            
+            rook = _field.GetChP(new Point(king._p.y, king._p.x + shift));
+
+            _field.SetChP(rook._p, null);
+            _field.SetChP(new Point(king._p.y, king._p.x + Math.Sign(shift)), rook);
+            _field.SetChP(king._p, null);
+            _field.SetChP(p, king);
 
         }
-        private void Attack(ChessPiece myChP, Point targP, ChessPiece targChP)
-        {
-            Console.WriteLine($"{myChP.Side} {(myChP._p.y, myChP._p.x)}: {myChP.ChPType} съел {targChP.ChPType} на {(targP.y, targP.x)}");
 
-        }
 
         private List<(Point, TypeMove)> EditMoves(ChessPiece thisChP, IEnumerable<IEnumerable<(Point, TypeMove)>> list)//добавление учета других фигур на доске в передвижениях фигуры
         {
@@ -144,14 +161,17 @@ namespace Classes
             {
                 foreach (var i in line)
                 {
-                    ChessPiece chP = _field.GetChP(i.Item1);
                     Point p = i.Item1;
                     TypeMove type = i.Item2;
                     ChessPiece cellChP = _field.GetChP(p);
                     TypeMove result = 0;
 
+                    if (i.Item2 == TypeMove.Сastling && _rule.AccessCastling(thisChP, p))
+                    {
+                        result = TypeMove.Сastling;
+                    }
 
-                    if (cellChP == null && type != TypeMove.Attack) //на клетке нету фигуры и можно походить без атаки                     
+                    else if (cellChP == null && type != TypeMove.Attack) //на клетке нету фигуры и можно походить без атаки                     
                             result = TypeMove.Simple;
 
                     //на клетке есть вражеская и данным ходом можно атаковать
@@ -219,7 +239,7 @@ namespace Classes
         {
             _turn.MoveNext();
             PlayerSide victorySide = (PlayerSide)_turn.Current;
-            Console.WriteLine($"Шах и мат! Победила сторона {victorySide}!"); ;
+            UI.Victory(victorySide);
         }
 
 
