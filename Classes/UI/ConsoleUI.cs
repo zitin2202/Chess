@@ -101,28 +101,53 @@ namespace Classes
 
         public void SimpleMove(ChessPiece thisChP, Point targetP)
         {
-            Console.WriteLine($"{thisChP.Side} {(thisChP._p.y, thisChP._p.x)}: {thisChP.ChPType} идет на {(targetP.y, targetP.x)}");
+            Console.WriteLine($"{defaultStr(thisChP)}{thisChP.ChPType} идет на {(targetP.y, targetP.x)}");
 
         }
 
         public void Attack(ChessPiece thisChP, Point targetP, ChessPiece targetChP)
         {
-            Console.WriteLine($"{thisChP.Side} {(thisChP._p.y, thisChP._p.x)}: {thisChP.ChPType} съел {targetChP.ChPType} на {(targetP.y, targetP.x)}");
+            Console.WriteLine($"{defaultStr(thisChP)}{thisChP.ChPType} съел {targetChP.ChPType} на {(targetP.y, targetP.x)}");
         }
 
         public void Сastling(ChessPiece thisChP, Point targetP, ChessPiece targetChP)
         {
             string castlingType = (Game._rule.CastlingShift(thisChP, targetP) > 0 ? "короткую" : "длинную");
 
-            Console.WriteLine($"{thisChP.Side} {(thisChP._p.y, thisChP._p.x)}: совершает {castlingType} рокировку");
+            Console.WriteLine($"{defaultStr(thisChP)}совершает {castlingType} рокировку");
 
 
         }
+
+        private string defaultStr(ChessPiece chP)
+        {
+            return $"{chP.Side} {(chP._p.y, chP._p.x)}: ";
+
+        }
+
+        public Type СhoiceChessPiece()
+        {
+            Console.WriteLine("Пешка дошла до конца доски\nВыберите, на какую фигуру ее поменять");
+            Console.WriteLine("B - слон, K - лошадь,  R - ладья, Q - ферзь");
+            string input;
+            do
+            {
+                input = Console.ReadLine().ToUpper();
+            }
+            while (!Exception.ConsoleСhoiceChPValidation(input));
+
+            return Data.StrToChPType[input];
+
+
+        }
+
 
         public void Victory(PlayerSide victorySide)
         {
             Console.WriteLine($"Шах и мат! Победила сторона {victorySide}!");
         }
+
+
 
 
     }

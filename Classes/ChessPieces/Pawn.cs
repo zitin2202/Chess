@@ -14,7 +14,7 @@ namespace Classes
             yDirect = (Side == PlayerSide.First ? -1 : 1);
 
 
-    }
+        }
 
         public override ChPType ChPType => ChPType.Pawn;
 
@@ -30,9 +30,8 @@ namespace Classes
             yield return PartOfMove(directionPoints[1], 1, TypeMove.Attack);
             yield return PartOfMove(directionPoints[2], 1, TypeMove.Attack);
 
-
-
-
         }
+
+
     }
 }

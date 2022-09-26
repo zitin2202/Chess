@@ -31,6 +31,8 @@ namespace Classes
 
         void Сastling(ChessPiece thisChP, Point targetP, ChessPiece targetChP);
 
+        Type СhoiceChessPiece();
+
         void Victory(PlayerSide victorySide);
 
     }

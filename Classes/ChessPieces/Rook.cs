@@ -8,9 +8,9 @@ namespace Classes
 {
     public class Rook : ChessPiece, ISaveDirectionPoints
     {
-        public Rook(Point p, PlayerSide side) : base(p,side)
+        public Rook(Point p, PlayerSide side) : base(p, side)
         {
-            
+
         }
 
         public override ChPType ChPType => ChPType.Rook;

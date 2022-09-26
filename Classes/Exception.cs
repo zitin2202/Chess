@@ -7,7 +7,6 @@ namespace Classes
    public static class Exception
     {
 
-
         public static bool ValidationCell(Point p )
         {
 
@@ -32,11 +31,28 @@ namespace Classes
 
             }
 
-            Console.WriteLine("Не корректный ввод\n");
-            p=null;
+            IncorrectInputMessage();
+            p = null;
             return false;
 
 
+        }
+
+        public static bool ConsoleСhoiceChPValidation(string input)
+        {
+            if (Data.StrToChPType.ContainsKey(input))
+                return true;
+            else
+            {
+                IncorrectInputMessage();
+                return false;
+            }
+          
+        }
+
+        private static void IncorrectInputMessage()
+        {
+            Console.WriteLine("Не корректный ввод\n");
         }
     }
 

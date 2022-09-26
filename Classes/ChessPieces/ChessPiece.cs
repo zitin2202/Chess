@@ -15,7 +15,7 @@ namespace Classes
 
         }
         public abstract ChPType ChPType { get;}
-        public PlayerSide Side { get; protected set;}
+        public  PlayerSide Side { get;}
 
 
         public Point _p;

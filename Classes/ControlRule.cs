@@ -223,5 +223,11 @@ namespace Classes
 
 
         }
+
+        public bool PawnTransformationAccess(ChessPiece chP)
+        {
+            int requiredLine = (chP.Side == PlayerSide.First ? 0 : Field.maxY - 1);
+            return (chP._p.y == requiredLine ? true : false);
+        }
     }
 }

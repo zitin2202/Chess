@@ -26,6 +26,7 @@ namespace Classes
         public void Start()
         {
             _turn.MoveNext();
+            _turn.MoveNext();
 
             while (true)
             {
@@ -137,6 +138,12 @@ namespace Classes
         {
             _field.SetChP(chP._p, null);
             _field.SetChP(p, chP);
+            if (chP.ChPType == ChPType.Pawn && _rule.PawnTransformationAccess(chP))
+            {
+                UI.FieldRender();
+                PawnTransformation(chP);
+
+            }
         }
 
         private void Сastling(ChessPiece king, Point p)
@@ -232,6 +239,15 @@ namespace Classes
                 return true;
             else
                 return false;
+
+        }
+
+        private void PawnTransformation(ChessPiece chP)
+        {
+           Type classChP = UI.СhoiceChessPiece();
+           ChessPiece newChP = (ChessPiece)Activator.CreateInstance(classChP, chP._p,chP.Side);
+           _field.SetChP(chP._p, newChP);
+
 
         }
 
