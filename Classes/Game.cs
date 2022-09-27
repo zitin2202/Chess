@@ -15,7 +15,6 @@ namespace Classes
         private Dictionary<ChessPiece, List<(Point, TypeMove)>> _allMovesPoints;
         private IUI UI;
 
-
         public Game(Field f)
         {
             _field = f;
@@ -25,14 +24,14 @@ namespace Classes
 
         public void Start()
         {
-            _turn.MoveNext();
-            _turn.MoveNext();
-
             while (true)
             {
+                _turn.MoveNext();
+
                 _rule.SecurityCheckAll();
                 if (!allPossibleMoves())
                 {
+                    UI.FieldRender();
                     Victory();
                     break;
                 }
@@ -52,14 +51,8 @@ namespace Classes
             }
         }
 
-
-
-
-
-
         public bool Select(Point p)//выбор фигуры
         {
-            int count = 0;
             ChessPiece chP = _field.GetChP(p);
             if (!_rule.AccessChP(chP))
             {
@@ -69,12 +62,12 @@ namespace Classes
             }
           
 
-            _activeChP.Item1 = chP;
 
             UI.SelectedСhessPiece(chP);
 
             if (_allMovesPoints[chP].Count>0)
             {
+                _activeChP.Item1 = chP;
                 foreach (var i in _allMovesPoints[chP])
                 {
                     int y = i.Item1.y;
@@ -173,9 +166,13 @@ namespace Classes
                     ChessPiece cellChP = _field.GetChP(p);
                     TypeMove result = 0;
 
-                    if (i.Item2 == TypeMove.Сastling && _rule.AccessCastling(thisChP, p))
+                    if (i.Item2 == TypeMove.Сastling)
                     {
-                        result = TypeMove.Сastling;
+                        if (_rule.AccessCastling(thisChP, p))
+                        {
+                            result = TypeMove.Сastling;
+
+                        }
                     }
 
                     else if (cellChP == null && type != TypeMove.Attack) //на клетке нету фигуры и можно походить без атаки                     

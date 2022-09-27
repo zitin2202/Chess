@@ -1,30 +1,33 @@
 ﻿using Enums;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Classes
 {
     public class ConsoleUI : IUI
     {
         public Game Game { get; set; }
+        private static readonly Regex regexEmoji = new Regex(@"[\u2600-\u26FF]");
 
         public ConsoleUI(Game game)
         {
             Game = game;
-        }
 
+    }
 
         public void FieldRender()
         {
-
-            string fieldGui = "  ";
+            File.WriteAllText("WriteLines.txt", "♝");
+            Console.Write("  ");
 
             for (int x = 0; x < Field.maxX; x++)
             {
-                fieldGui += $"{x}  ";
+                Console.Write($"{x}  ");
             }
-            fieldGui += "\n";
+            Console.WriteLine();
 
 
             for (int y = 0; y < Field.maxY; y++)
@@ -32,20 +35,39 @@ namespace Classes
 
                 for (int x = 0; x < Field.maxX; x++)
                 {
+                    Console.Write($"{(x == 0 ? $"{y} " : "")}");
+
+
                     ChessPiece chP = Game._field.GetChP(new Point(y, x));
 
-                    fieldGui += $"{(x == 0 ? $"{y} " : "")}{(chP == null ? "  " : chP.Side.ToString()[0].ToString() + chP.ChPType.ToString()[0].ToString())} ";
+                    if (chP!=null)
+                        Console.ForegroundColor = (chP.Side == PlayerSide.First ? ConsoleColor.White : ConsoleColor.DarkGray);
 
+
+                    Console.Write($"{(chP == null ? "  " : SubStrChPType(chP,0,1))} ");
 
 
                 }
-                fieldGui += "\n";
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine();
 
 
 
             }
-            Console.WriteLine(fieldGui);
 
+        }
+
+        private string SubStrChPType(ChessPiece chP, int start,int finish)
+        {
+            string str ="";
+            string typeStr = chP.ChPType.ToString();
+            for (int i = start; i <= finish && i<typeStr.Length; i++)
+            {
+                str += typeStr[i].ToString();
+
+            }
+
+            return str;
         }
 
         public void TurnReport()

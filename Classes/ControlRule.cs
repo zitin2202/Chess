@@ -31,7 +31,10 @@ namespace Classes
                     TypeMove type = i.Item2;
                     ChessPiece cellChP = _game._field.GetChP(p);
 
-                    if (cellChP == null && type != TypeMove.Attack) //все случаи, когда на клетке нету фигуры и можно походить без атаки
+                    if (type == TypeMove.Simple) //если нельзя можно атаковать
+                        break;
+
+                    if (cellChP == null) //все случаи, когда на клетке нету фигуры и ходом можно атаковать
                     {
                         if (interval.Item1 == null)
                         {
@@ -42,48 +45,42 @@ namespace Classes
                         {
                             interval.Item2.Add(p);
                         }
-                        continue;
                     }
 
-                    else if (cellChP != null) //все случаи, когда на клетке есть фигура
+                    else if (cellChP != null) //все случаи, когда на клетке есть фигура и ходом можно атаковать
                     {
-                        if (type != TypeMove.Simple)//данным ходом можно атаковать
+                        if (thisChP.Side != cellChP.Side) //фигура вражеская
                         {
-                            if (thisChP.Side != cellChP.Side) //фигура вражеская
+                            if (cellChP.ChPType == ChPType.King)
                             {
-                                if (cellChP.ChPType == ChPType.King)
+                                if (interval.Item1 != null)//между атакующей фигурой и королем есть еще одная фигура, защищающая короля
                                 {
-                                    if (interval.Item1 != null)//между атакующей фигурой и королем есть еще одная фигура, защищающая короля
-                                    {
-                                        _protectKing[interval.Item1] = interval.Item2;//сохранение защищающей фигуры с интервалом, в котором она может передвигаться
-                                        break;
-                                    }
-                                    else //непосредственная угроза королю
-                                    {
-                                        check = true;
-                                        _checkLines.Add(interval.Item2);//добавление отрезков между угрожающей фигурой(включительно) и королем
-                                    }
-
-                                }
-
-                                else if (interval.Item1 == null && !check)
-                                {
-                                    interval.Item1 = cellChP;
-                                }
-                                else
+                                    _protectKing[interval.Item1] = interval.Item2;//сохранение защищающей фигуры с интервалом, в котором она может передвигаться
                                     break;
+                                }
+                                else //непосредственная угроза королю
+                                {
+                                    check = true;
+                                    _unsafeCell[p.y, p.x] = true;
+                                    _checkLines.Add(interval.Item2);//добавление отрезков между угрожающей фигурой(включительно) и королем
+                                }
+
                             }
 
-                            else
+                            else if (interval.Item1 == null && !check)
                             {
-                                _unsafeCell[p.y, p.x] = true;//учет не безопасных для короля клеток
-                                break;
+                                _unsafeCell[p.y, p.x] = true;
+                                interval.Item1 = cellChP;
                             }
-
+                            else
+                                break;
                         }
 
                         else
+                        {
+                            _unsafeCell[p.y, p.x] = true; //учет небезопасных для короля клеток
                             break;
+                        }
 
                     }
 
