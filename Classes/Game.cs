@@ -24,7 +24,7 @@ namespace Classes
 
         public void Start()
         {
-            _field.DeafultCell();
+            _field.DeafultField();
             while (true)
             {
                 _turn.MoveNext();

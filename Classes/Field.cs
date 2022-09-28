@@ -11,12 +11,8 @@ namespace Classes
 
         private ChessPiece[,] _cells;
 
-        public Field()
-        {
-            DeafultCell();
-        }
 
-        public void DeafultCell()
+        public void DeafultField()
         {
             _cells = new ChessPiece[maxY, maxX]
             {
