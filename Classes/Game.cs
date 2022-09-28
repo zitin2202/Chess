@@ -24,6 +24,7 @@ namespace Classes
 
         public void Start()
         {
+            _field.DeafultCell();
             while (true)
             {
                 _turn.MoveNext();
@@ -47,8 +48,8 @@ namespace Classes
                 {
 
                 }
-
             }
+
         }
 
         public bool Select(Point p)//выбор фигуры
