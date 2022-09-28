@@ -10,8 +10,6 @@ namespace Classes
     public class ConsoleUI : IUI
     {
         public Game Game { get; set; }
-        private static readonly Regex regexEmoji = new Regex(@"[\u2600-\u26FF]");
-
         public ConsoleUI(Game game)
         {
             Game = game;
@@ -20,7 +18,6 @@ namespace Classes
 
         public void FieldRender()
         {
-            File.WriteAllText("WriteLines.txt", "♝");
             Console.Write("  ");
 
             for (int x = 0; x < Field.maxX; x++)
