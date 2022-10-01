@@ -14,7 +14,7 @@ namespace Classes
         {
             Game = game;
 
-    }
+        }
 
         public void FieldRender()
         {
@@ -83,7 +83,7 @@ namespace Classes
                 s = Console.ReadLine().Split(",");
 
             }
-            while (!Exception.ConsoleInputValidation(s, out p));
+            while (!Validation.ConsoleInputValidation(s, out p));
 
 
 
@@ -153,7 +153,7 @@ namespace Classes
             {
                 input = Console.ReadLine().ToUpper();
             }
-            while (!Exception.ConsoleСhoiceChPValidation(input));
+            while (!Validation.ConsoleСhoiceChPValidation(input));
 
             return Data.StrToChPType[input];
 

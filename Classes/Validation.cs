@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Classes
 {
-   public static class Exception
+   public static class Validation
     {
 
         public static bool ValidationCell(Point p )

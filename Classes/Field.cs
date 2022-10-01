@@ -29,7 +29,7 @@ namespace Classes
         }
         public bool SetChP (Point p, ChessPiece chP)
         {
-            if (Exception.ValidationCell(p))
+            if (Validation.ValidationCell(p))
             {
                 _cells[p.y, p.x] = chP;
 
@@ -47,7 +47,7 @@ namespace Classes
 
         public  ChessPiece GetChP(Point p)
         {
-            if (Exception.ValidationCell(p))
+            if (Validation.ValidationCell(p))
             {
                 return _cells[p.y, p.x];
             }
