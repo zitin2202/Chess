@@ -127,7 +127,7 @@ namespace Classes
 
 
         }
-        public bool AccessCell(FieldPoint p, ChessPiece chP)//определяет безопасен ли данный ход для короля
+        public bool AccessCell(ChessPiece chP, FieldPoint p)//определяет безопасен ли данный ход для короля
         {
             bool access = true;
             int lenCheckLines = (_checkLines != null ? _checkLines.Count : 0);
@@ -164,18 +164,18 @@ namespace Classes
 
         public bool AccessCastling(ChessPiece king, FieldPoint targetP)
         {
-            int shift = CastlingShift(king, targetP);
+            int shift = ShiftRelativeRook(king, targetP);
 
             int direction = Math.Sign(shift);
 
-            ChessPiece targetCell = _game._field.GetChP(new FieldPoint(king._p.y, king._p.x + shift));
-            if (targetCell != null && targetCell.ChPType == ChPType.Rook && king.StartPosition && targetCell.StartPosition)
+            ChessPiece chPCastling = _game._field.GetChP(new FieldPoint(king._p.y, king._p.x + shift));
+            if (chPCastling != null && chPCastling.ChPType == ChPType.Rook && king.StartPosition && chPCastling.StartPosition && _checkLines.Count == 0)
             {
                 FieldPoint cell;
                 for (int i = 1; i < Math.Abs(shift); i++)
                 {
                     cell = new FieldPoint(king._p.y, king._p.x + i * direction);
-                    if (_game._field.GetChP(cell)!=null || _unsafeCell[cell.y,cell.x])
+                    if (_game._field.GetChP(cell)!=null|| (i<3 && _unsafeCell[cell.y,cell.x]))
                     {
                         return false;
                     }
@@ -189,7 +189,7 @@ namespace Classes
 
         }
 
-        public int CastlingShift(ChessPiece king, FieldPoint targetP)
+        public int ShiftRelativeRook(ChessPiece king, FieldPoint targetP)
         {
             int shift;
 

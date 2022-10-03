@@ -12,15 +12,21 @@ namespace ChessForm
     public partial class СhoiceChessPiece : Form
     {
         public Dictionary<Button, ChPType> _chessPieces;
-        public СhoiceChessPiece(int btn_size)
+        private FormUI _UI;
+        public СhoiceChessPiece(FormUI UI)
         {
             InitializeComponent();
 
             _chessPieces = new Dictionary<Button, ChPType>();
+            _UI = UI;
 
-            for (int i = 2; i < 4; i++)
+            for (int i = 2; i < 6; i++)
             {
-                _chessPieces.Add(new Button(),(ChPType)i);
+                Button btn = new Button();
+                _chessPieces.Add(btn,(ChPType)i);
+                btn.Click += _UI.BtnChoiceChess_Click;
+                btn.Size = _UI._sizeButtonObject;
+
             }
         }
 

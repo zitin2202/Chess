@@ -133,7 +133,7 @@ namespace Classes
 
         public void Сastling(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP)
         {
-            string castlingType = (Game._rule.CastlingShift(thisChP, targetP) > 0 ? "короткую" : "длинную");
+            string castlingType = (Game._rule.ShiftRelativeRook(thisChP, targetP) > 0 ? "короткую" : "длинную");
 
             Console.WriteLine($"{defaultStr(thisChP)} совершает {castlingType} рокировку");
 

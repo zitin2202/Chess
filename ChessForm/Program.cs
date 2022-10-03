@@ -20,10 +20,9 @@ namespace ChessForm
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            FormUI form = new FormUI(new Game(new Field()));
+            FormUI UI = new FormUI(new Game(new Field()));
 
-
-            Application.Run(form);
+            Application.Run(UI.fieldForm);
 
 
 

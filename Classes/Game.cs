@@ -67,6 +67,7 @@ namespace Classes
 
         public bool Select(FieldPoint p)//выбор фигуры
         {
+            _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
             ChessPiece chP = _field.GetChP(p);
             if (!_rule.AccessChP(chP))
             {
@@ -155,7 +156,7 @@ namespace Classes
 
         private void Сastling(ChessPiece king, FieldPoint p)
         {
-            int shift = _rule.CastlingShift(king,p);
+            int shift = _rule.ShiftRelativeRook(king,p);
             ChessPiece rook;
             
             rook = _field.GetChP(new FieldPoint(king._p.y, king._p.x + shift));
@@ -200,7 +201,7 @@ namespace Classes
                     else
                         break;
 
-                    if (result!=0 && _rule.AccessCell(p, thisChP))
+                    if (result!=0 && _rule.AccessCell(thisChP, p))
                         movesPoints.Add((p, result));
 
                     if (result == TypeMove.Attack)

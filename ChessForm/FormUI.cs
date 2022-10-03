@@ -2,8 +2,6 @@
 using Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Threading;
@@ -11,71 +9,38 @@ using System.Windows.Forms;
 
 namespace ChessForm
 {
-
-    public partial class FormUI : Form,IUI
+    public class FormUI : IUI
     {
-        public Dictionary<Button,FieldPoint> _points = new Dictionary<Button,FieldPoint>();
-        public Dictionary<FieldPoint, Button> _buttons = new Dictionary<FieldPoint, Button>();
-        public static int btn_size = 70;
-        Size sizeDisplay = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size;
-        Size formSize;
-        Point formLocation;
-        Button _activeButton = null;
-        СhoiceChessPiece СhoiceForm;
-        bool pawnTransformtaion = false;
         public Game Game { get; set;}
+        public FieldForm fieldForm;
+        СhoiceChessPiece choiceForm;
+        public Dictionary<Button, FieldPoint> _points = new Dictionary<Button, FieldPoint>();
+        public Dictionary<FieldPoint, Button> _buttons = new Dictionary<FieldPoint, Button>();
+        bool pawnTransformtaion = false;
+        Button _activeButton = null;
+        ChPType _choiceChess = 0;
+        public int _btnSize = 80;
+        public Size _sizeButtonObject;
+
+
+
 
         public FormUI(Game game)
         {
-            InitializeComponent();
-
+            _sizeButtonObject = new Size(_btnSize, _btnSize);
             Game = game;
             Game._UI = this;
-
-            СhoiceForm = new СhoiceChessPiece(btn_size);
-            foreach (Button btn in СhoiceForm._chessPieces.Keys)
-            {
-                btn.Click += Btn_Click;
-            }
-
-
-        }
+            fieldForm = new FieldForm(this);
+            fieldForm.Load += FieldForm_Load;
+            fieldForm.FormClosed += FieldForm_FormClosed;
+            fieldForm.Show();
+            choiceForm = new СhoiceChessPiece(this);
 
 
-        private void FormUI_Load(object sender, EventArgs e)
-        {
-            formSize = new Size((btn_size + 2) * 8, (btn_size + 5) * 8);
-            formLocation = new Point((sizeDisplay.Width - formSize.Width) / 2, (sizeDisplay.Height - formSize.Height) / 2);
-            this.Size = formSize;
-            this.Location = formLocation;
-
-
-            Size btnSize = new Size(btn_size, btn_size);
-
-            for (int y = 0; y < Field.maxY; y++)
-            {
-                for (int x = 0; x < Field.maxX; x++)
-                {
-                    Button btn = new Button();
-                    FieldPoint p = new FieldPoint(y, x);
-                    _points[btn] = p;
-                    _buttons[p] = btn;
-                    btn.Click += Btn_Click;
-                    btn.Size = btnSize;
-                    btn.Location = new Point(x * btn_size, y * btn_size);
-
-                    this.Controls.Add(btn);
-
-
-                }
-            }
-
-            FieldColorReset();
-
-            Thread Thread2 = new Thread(Game.Start);
-            Thread2.Start();
 
         }
+
+
 
         private void FieldColorReset()
         {
@@ -95,11 +60,6 @@ namespace ChessForm
 
         }
 
-        private void Btn_Click(object sender, EventArgs e)
-        {
-            _activeButton = (Button)sender;
-        }
-
         private IEnumerator<Color> СolorSelection()
         {
             while (true)
@@ -107,6 +67,28 @@ namespace ChessForm
                 yield return Color.DarkSlateGray;
                 yield return Color.White;
             }
+        }
+
+        public void Btn_Click(object sender, EventArgs e)
+        {
+            _activeButton = (Button)sender;
+        }
+
+        public void BtnChoiceChess_Click(object sender, EventArgs e)
+        {
+            _choiceChess = choiceForm._chessPieces[(Button)sender];
+        }
+
+        private void FieldForm_Load(object sender, EventArgs e)
+        {
+            FieldColorReset();
+            Thread threadGame = new Thread(Game.Start);
+            threadGame.Start();
+        }
+        private void FieldForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
         public void FieldRender()
@@ -133,9 +115,9 @@ namespace ChessForm
         {
         }
 
-         public FieldPoint СellSelection()
+        public FieldPoint СellSelection()
         {
-            while (_activeButton==null)
+            while (_activeButton == null)
             {
 
             }
@@ -164,13 +146,13 @@ namespace ChessForm
 
         }
 
-        public void NotChessМoveReport() 
-        { 
+        public void NotChessМoveReport()
+        {
 
         }
 
-        public void HaventSuchMove() 
-        { 
+        public void HaventSuchMove()
+        {
 
         }
 
@@ -192,24 +174,29 @@ namespace ChessForm
         public Type СhoiceChessPiece()
         {
             pawnTransformtaion = true;
-            foreach (var i in СhoiceForm._chessPieces)
+            foreach (var i in choiceForm._chessPieces)
             {
                 i.Key.Image = new Bitmap(new Bitmap($"chess_pieces\\{Game._turn.Current}\\{i.Value}.png"), i.Key.Size);
             }
+            return null;
+
 
         }
 
         public void Victory(PlayerSide victorySide)
         {
-            var result = MessageBox.Show($"Победила сторона {victorySide}","Игра окончена\nХотите сыграть снова?", MessageBoxButtons.YesNo);
+            var result = MessageBox.Show($"Победила сторона {victorySide}\nХотите сыграть снова?", "Игра окончена", MessageBoxButtons.YesNo);
 
             if (result == DialogResult.Yes)
             {
                 Game.Start();
             }
+            else
+            {
+                fieldForm.Close();
+            }
 
         }
-
 
     }
 }

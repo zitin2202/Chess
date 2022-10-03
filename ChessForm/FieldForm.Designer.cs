@@ -1,7 +1,7 @@
 ﻿
 namespace ChessForm
 {
-    partial class FormUI
+    partial class FieldForm
     {
         /// <summary>
         /// Required designer variable.
