@@ -10,9 +10,11 @@ namespace Classes
     public class ConsoleUI : IUI
     {
         public Game Game { get; set; }
+
         public ConsoleUI(Game game)
         {
             Game = game;
+            Game._UI = this;
 
         }
 
@@ -35,7 +37,7 @@ namespace Classes
                     Console.Write($"{(x == 0 ? $"{y} " : "")}");
 
 
-                    ChessPiece chP = Game._field.GetChP(new Point(y, x));
+                    ChessPiece chP = Game._field.GetChP(new FieldPoint(y, x));
 
                     if (chP!=null)
                         Console.ForegroundColor = (chP.Side == PlayerSide.First ? ConsoleColor.White : ConsoleColor.DarkGray);
@@ -72,11 +74,11 @@ namespace Classes
             Console.WriteLine($"Очередь игрока: {Game._turn.Current}");
         }
 
-        public Point СellSelection()
+        public FieldPoint СellSelection()
         {
             string message = (Game._activeChP.Item1 == null ? "Выберите фигуру" : "Сделайте ход");
             string[] s;
-            Point p;
+            FieldPoint p;
             do
             {
                 Console.WriteLine(message);
@@ -102,7 +104,7 @@ namespace Classes
             Console.WriteLine((chP.Side, chP.ChPType));
         }
 
-        public void PossibleMove(Point p, TypeMove type)
+        public void PossibleMove(FieldPoint p, TypeMove type)
         {
             ChessPiece targetChP = Game._field.GetChP(p);
             Console.WriteLine($"{(p.y,p.x)}: {( targetChP == null ? "Пусто" : targetChP.ChPType)}, {type}");
@@ -118,22 +120,22 @@ namespace Classes
             Console.WriteLine("Вы не можете походить сюда");
         }
 
-        public void SimpleMove(ChessPiece thisChP, Point targetP)
+        public void SimpleMove(ChessPiece thisChP, FieldPoint targetP)
         {
             Console.WriteLine($"{defaultStr(thisChP)}{thisChP.ChPType} идет на {(targetP.y, targetP.x)}");
 
         }
 
-        public void Attack(ChessPiece thisChP, Point targetP, ChessPiece targetChP)
+        public void Attack(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP)
         {
             Console.WriteLine($"{defaultStr(thisChP)}{thisChP.ChPType} съел {targetChP.ChPType} на {(targetP.y, targetP.x)}");
         }
 
-        public void Сastling(ChessPiece thisChP, Point targetP, ChessPiece targetChP)
+        public void Сastling(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP)
         {
             string castlingType = (Game._rule.CastlingShift(thisChP, targetP) > 0 ? "короткую" : "длинную");
 
-            Console.WriteLine($"{defaultStr(thisChP)}совершает {castlingType} рокировку");
+            Console.WriteLine($"{defaultStr(thisChP)} совершает {castlingType} рокировку");
 
 
         }

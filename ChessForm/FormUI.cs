@@ -1,108 +1,215 @@
-﻿using ChessForm;
+﻿using Classes;
 using Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
-using Classes;
 
 namespace ChessForm
 {
-    public class FormUI: IUI
-    {
-        private readonly Form form;
-        public Button[,] _cells = new Button[8, 8];
-        public static int btn_size = 70;
-        public Game Game => throw new NotImplementedException();
 
-        public FormUI(Form form)
+    public partial class FormUI : Form,IUI
+    {
+        public Dictionary<Button,FieldPoint> _points = new Dictionary<Button,FieldPoint>();
+        public Dictionary<FieldPoint, Button> _buttons = new Dictionary<FieldPoint, Button>();
+        public static int btn_size = 70;
+        Size sizeDisplay = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size;
+        Size formSize;
+        Point formLocation;
+        Button _activeButton = null;
+        СhoiceChessPiece СhoiceForm;
+        bool pawnTransformtaion = false;
+        public Game Game { get; set;}
+
+        public FormUI(Game game)
         {
-            this.form = form;
+            InitializeComponent();
+
+            Game = game;
+            Game._UI = this;
+
+            СhoiceForm = new СhoiceChessPiece(btn_size);
+            foreach (Button btn in СhoiceForm._chessPieces.Keys)
+            {
+                btn.Click += Btn_Click;
+            }
+
+
+        }
+
+
+        private void FormUI_Load(object sender, EventArgs e)
+        {
+            formSize = new Size((btn_size + 2) * 8, (btn_size + 5) * 8);
+            formLocation = new Point((sizeDisplay.Width - formSize.Width) / 2, (sizeDisplay.Height - formSize.Height) / 2);
+            this.Size = formSize;
+            this.Location = formLocation;
+
+
+            Size btnSize = new Size(btn_size, btn_size);
+
+            for (int y = 0; y < Field.maxY; y++)
+            {
+                for (int x = 0; x < Field.maxX; x++)
+                {
+                    Button btn = new Button();
+                    FieldPoint p = new FieldPoint(y, x);
+                    _points[btn] = p;
+                    _buttons[p] = btn;
+                    btn.Click += Btn_Click;
+                    btn.Size = btnSize;
+                    btn.Location = new Point(x * btn_size, y * btn_size);
+
+                    this.Controls.Add(btn);
+
+
+                }
+            }
+
+            FieldColorReset();
+
+            Thread Thread2 = new Thread(Game.Start);
+            Thread2.Start();
+
+        }
+
+        private void FieldColorReset()
+        {
+            var colorCell = СolorSelection();
+
+            for (int y = 0; y < Field.maxY; y++)
+            {
+                for (int x = 0; x < Field.maxX; x++)
+                {
+                    colorCell.MoveNext();
+
+                    _buttons[new FieldPoint(y, x)].BackColor = colorCell.Current;
+                }
+
+                colorCell.MoveNext();
+            }
+
+        }
+
+        private void Btn_Click(object sender, EventArgs e)
+        {
+            _activeButton = (Button)sender;
+        }
+
+        private IEnumerator<Color> СolorSelection()
+        {
+            while (true)
+            {
+                yield return Color.DarkSlateGray;
+                yield return Color.White;
+            }
         }
 
         public void FieldRender()
         {
-            form.Size = new Size(btn_size*9, btn_size*9);
-            var colorCell = СolorSelection();
-            for (int y = 0; y < 8; y++)
+            FieldColorReset();
+            foreach (var i in _points)
             {
-                for (int x = 0; x < 8; x++)
+                ChessPiece chP = Game._field.GetChP(i.Value);
+                if (chP != null)
                 {
-                    Button btn = new Button();
-                    _cells[y, x] = btn;
+                    Bitmap bitmap = new Bitmap(new Bitmap($"chess_pieces\\{chP.Side}\\{chP.ChPType}.png"), i.Key.Size);
+                    i.Key.Image = bitmap;
 
-                    btn.Size = new Size(btn_size, btn_size);
-                    btn.Location = new Point(x * btn_size, y* btn_size);
-
-                    colorCell.MoveNext();
-                    btn.BackColor = colorCell.Current;
-
-                    form.Controls.Add(btn);
                 }
-                colorCell.MoveNext();
+                else
+                {
+                    i.Key.Image = null;
+                }
+
             }
         }
 
- 
-
-        void IUI.TurnReport()
+        public void TurnReport()
         {
-            throw new NotImplementedException();
         }
 
-        Point IUI.СellSelection()
+         public FieldPoint СellSelection()
         {
-            throw new NotImplementedException();
+            while (_activeButton==null)
+            {
+
+            }
+            FieldPoint p = _points[_activeButton];
+            _activeButton = null;
+            FieldColorReset();
+
+            return p;
+
         }
 
-        void IUI.NotChessPieceReport()
+        public void NotChessPieceReport()
         {
-            throw new NotImplementedException();
+
         }
 
-        void IUI.SelectedСhessPiece(ChessPiece chP)
+        public void SelectedСhessPiece(ChessPiece chP)
         {
-            throw new NotImplementedException();
+
         }
 
-        void IUI.PossibleMove(Point p, TypeMove type)
+        public void PossibleMove(FieldPoint p, TypeMove type)
         {
-            throw new NotImplementedException();
+            Color color = (type == TypeMove.Simple ? Color.Gray : Color.Red);
+            _buttons[p].BackColor = color;
+
         }
 
-        void IUI.NotChessМoveReport()
-        {
-            throw new NotImplementedException();
+        public void NotChessМoveReport() 
+        { 
+
         }
 
-        void IUI.HaventSuchMove()
-        {
-            throw new NotImplementedException();
+        public void HaventSuchMove() 
+        { 
+
         }
 
-        void IUI.SimpleMove(ChessPiece thisChP, Point targetP)
+        public void SimpleMove(ChessPiece thisChP, FieldPoint targetP)
         {
-            throw new NotImplementedException();
+
         }
 
-        void IUI.Attack(ChessPiece thisChP, Point targetP, ChessPiece targetChP)
+        public void Attack(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP)
         {
-            throw new NotImplementedException();
+
         }
 
-        void IUI.Сastling(ChessPiece thisChP, Point targetP, ChessPiece targetChP)
+        public void Сastling(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP)
         {
-            throw new NotImplementedException();
+
         }
 
-        Type IUI.СhoiceChessPiece()
+        public Type СhoiceChessPiece()
         {
-            throw new NotImplementedException();
+            pawnTransformtaion = true;
+            foreach (var i in СhoiceForm._chessPieces)
+            {
+                i.Key.Image = new Bitmap(new Bitmap($"chess_pieces\\{Game._turn.Current}\\{i.Value}.png"), i.Key.Size);
+            }
+
         }
 
-        void IUI.Victory(PlayerSide victorySide)
+        public void Victory(PlayerSide victorySide)
         {
-            throw new NotImplementedException();
+            var result = MessageBox.Show($"Победила сторона {victorySide}","Игра окончена\nХотите сыграть снова?", MessageBoxButtons.YesNo);
+
+            if (result == DialogResult.Yes)
+            {
+                Game.Start();
+            }
+
         }
+
+
     }
 }

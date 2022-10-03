@@ -7,29 +7,29 @@ namespace Classes
 {
     public interface IUI
     {
-        Game Game { get; }
+        Game Game { get; set; }
 
         void FieldRender();
 
         void TurnReport();
 
-        Point СellSelection();
+        FieldPoint СellSelection();
 
         void NotChessPieceReport();
 
         void SelectedСhessPiece(ChessPiece chP);
 
-        void PossibleMove(Point p, TypeMove type);
+        void PossibleMove(FieldPoint p, TypeMove type);
 
         void NotChessМoveReport();
 
         void HaventSuchMove();
  
-        void SimpleMove(ChessPiece thisChP,Point targetP);
+        void SimpleMove(ChessPiece thisChP,FieldPoint targetP);
 
-        void Attack(ChessPiece thisChP, Point targetP, ChessPiece targetChP);
+        void Attack(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP);
 
-        void Сastling(ChessPiece thisChP, Point targetP, ChessPiece targetChP);
+        void Сastling(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP);
 
         Type СhoiceChessPiece();
 

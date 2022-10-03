@@ -2,12 +2,10 @@ using Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.DataFormats;
 
-namespace ChessForm
+namespace ChessForms
 {
     static class Program
     {
@@ -20,16 +18,8 @@ namespace ChessForm
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            FormUI form = new FormUI(new Game(new Field()));
-
-
-            Application.Run(form);
-
-
-
-
+            Game Game = new Game(new Field(), new FormUI());
+            Application.Run((Form)Game._UI);
         }
-
-
     }
 }

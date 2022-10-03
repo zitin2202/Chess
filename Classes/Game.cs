@@ -10,60 +10,74 @@ namespace Classes
     {
         public Field _field;
         public ControlRule _rule;
-        public IEnumerator _turn = TurnToGo();
-        public (ChessPiece, TypeMove[,]) _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
-        private Dictionary<ChessPiece, List<(Point, TypeMove)>> _allMovesPoints;
-        private IUI UI;
+        public IEnumerator _turn;
+        public (ChessPiece, TypeMove[,]) _activeChP;
+        private Dictionary<ChessPiece, List<(FieldPoint, TypeMove)>> _allMovesPoints;
+        public IUI _UI;
 
         public Game(Field f)
         {
             _field = f;
             _rule = new ControlRule(this);
-            UI = new ConsoleUI(this);
         }
 
         public void Start()
         {
+            _field.FieldReset();
+            _rule = new ControlRule(this);
+            _turn = TurnToGo();
+
             while (true)
             {
                 _turn.MoveNext();
-
                 _rule.SecurityCheckAll();
                 if (!allPossibleMoves())
                 {
-                    UI.FieldRender();
+                    _UI.FieldRender();
                     Victory();
                     break;
                 }
                 _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
-                UI.FieldRender();
-                UI.TurnReport();
-                while (!Select(UI.СellSelection()))
+                _UI.FieldRender();
+                _UI.TurnReport();
+
+
+                FieldPoint p;
+                p = _UI.СellSelection();
+                while (_activeChP.Item2[p.y, p.x] == 0)
                 {
+                    while (!Select(p))
+                    {
+                        p = _UI.СellSelection();
+
+                    }
+
+                    p = _UI.СellSelection();
 
                 }
-
-                while (!Action(UI.СellSelection()))
+               
+                while (!Action(p))
                 {
 
                 }
 
             }
+
         }
 
-        public bool Select(Point p)//выбор фигуры
+        public bool Select(FieldPoint p)//выбор фигуры
         {
             ChessPiece chP = _field.GetChP(p);
             if (!_rule.AccessChP(chP))
             {
-                UI.NotChessPieceReport();
+                _UI.NotChessPieceReport();
                 return false;
 
             }
           
 
 
-            UI.SelectedСhessPiece(chP);
+            _UI.SelectedСhessPiece(chP);
 
             if (_allMovesPoints[chP].Count>0)
             {
@@ -74,13 +88,13 @@ namespace Classes
                     int x = i.Item1.x;
 
                     _activeChP.Item2[y,x] = i.Item2;
-                    UI.PossibleMove(i.Item1,i.Item2);
+                    _UI.PossibleMove(i.Item1,i.Item2);
                 }
             }
 
             else
             {
-                UI.NotChessМoveReport();
+                _UI.NotChessМoveReport();
                 return false;
 
             }
@@ -89,13 +103,13 @@ namespace Classes
 
         }
 
-        public bool Action(Point p)//перемещение фигуры
+        public bool Action(FieldPoint p)//перемещение фигуры
         {
             var active = _activeChP;
 
             if (active.Item2[p.y,p.x] == 0)
             {
-                UI.HaventSuchMove();
+                _UI.HaventSuchMove();
                 return false;
 
             }
@@ -106,12 +120,12 @@ namespace Classes
             {
                 case TypeMove.Simple:
                     Move(active.Item1, p);
-                    UI.SimpleMove(active.Item1,p);
+                    _UI.SimpleMove(active.Item1,p);
                     break;
 
                 case TypeMove.Attack:
                     Move(active.Item1, p);
-                    UI.Attack(active.Item1,p, targetChP);
+                    _UI.Attack(active.Item1,p, targetChP);
                     break;
 
                 case TypeMove.Сastling:
@@ -127,41 +141,41 @@ namespace Classes
 
         }
 
-        private void Move(ChessPiece chP, Point p)
+        private void Move(ChessPiece chP, FieldPoint p)
         {
             _field.SetChP(chP._p, null);
             _field.SetChP(p, chP);
             if (chP.ChPType == ChPType.Pawn && _rule.PawnTransformationAccess(chP))
             {
-                UI.FieldRender();
+                _UI.FieldRender();
                 PawnTransformation(chP);
 
             }
         }
 
-        private void Сastling(ChessPiece king, Point p)
+        private void Сastling(ChessPiece king, FieldPoint p)
         {
             int shift = _rule.CastlingShift(king,p);
             ChessPiece rook;
             
-            rook = _field.GetChP(new Point(king._p.y, king._p.x + shift));
+            rook = _field.GetChP(new FieldPoint(king._p.y, king._p.x + shift));
 
             _field.SetChP(rook._p, null);
-            _field.SetChP(new Point(king._p.y, king._p.x + Math.Sign(shift)), rook);
+            _field.SetChP(new FieldPoint(king._p.y, king._p.x + Math.Sign(shift)), rook);
             _field.SetChP(king._p, null);
             _field.SetChP(p, king);
 
         }
 
 
-        private List<(Point, TypeMove)> EditMoves(ChessPiece thisChP, IEnumerable<IEnumerable<(Point, TypeMove)>> list)//добавление учета других фигур на доске в передвижениях фигуры
+        private List<(FieldPoint, TypeMove)> EditMoves(ChessPiece thisChP, IEnumerable<IEnumerable<(FieldPoint, TypeMove)>> list)//добавление учета других фигур на доске в передвижениях фигуры
         {
-            List<(Point, TypeMove)> movesPoints = new List<(Point,TypeMove)>();
+            List<(FieldPoint, TypeMove)> movesPoints = new List<(FieldPoint,TypeMove)>();
             foreach (var line in list)
             {
                 foreach (var i in line)
                 {
-                    Point p = i.Item1;
+                    FieldPoint p = i.Item1;
                     TypeMove type = i.Item2;
                     ChessPiece cellChP = _field.GetChP(p);
                     TypeMove result = 0;
@@ -214,14 +228,14 @@ namespace Classes
 
         private bool allPossibleMoves()
         {
-            _allMovesPoints = new Dictionary<ChessPiece, List<(Point, TypeMove)>>();
+            _allMovesPoints = new Dictionary<ChessPiece, List<(FieldPoint, TypeMove)>>();
             int count = 0;
 
             for (int y = 0; y < Field.maxY; y++)
             {
                 for (int x = 0; x < Field.maxY; x++)
                 {
-                    ChessPiece chP = _field.GetChP(new Point(y, x));
+                    ChessPiece chP = _field.GetChP(new FieldPoint(y, x));
                     if (chP != null && chP.Side == (PlayerSide)_turn.Current)
                     {
                         _allMovesPoints[chP] = EditMoves(chP, chP.GetMoves());
@@ -241,7 +255,7 @@ namespace Classes
 
         private void PawnTransformation(ChessPiece chP)
         {
-           Type classChP = UI.СhoiceChessPiece();
+           Type classChP = _UI.СhoiceChessPiece();
            ChessPiece newChP = (ChessPiece)Activator.CreateInstance(classChP, chP._p,chP.Side);
            _field.SetChP(chP._p, newChP);
 
@@ -252,7 +266,7 @@ namespace Classes
         {
             _turn.MoveNext();
             PlayerSide victorySide = (PlayerSide)_turn.Current;
-            UI.Victory(victorySide);
+            _UI.Victory(victorySide);
         }
 
 

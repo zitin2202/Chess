@@ -8,7 +8,7 @@ namespace Classes
 
      public abstract class ChessPiece
     {
-        public ChessPiece(Point p, PlayerSide side)
+        public ChessPiece(FieldPoint p, PlayerSide side)
         {
             _p = p;
             Side = side;
@@ -18,12 +18,12 @@ namespace Classes
         public  PlayerSide Side { get;}
 
 
-        public Point _p;
+        public FieldPoint _p;
 
         public bool StartPosition = true;
-        public abstract IEnumerable<IEnumerable<(Point, TypeMove)>> GetMoves();
+        public abstract IEnumerable<IEnumerable<(FieldPoint, TypeMove)>> GetMoves();
 
-        protected IEnumerable<(Point, TypeMove)> PartOfMove(Point direct, int lenMove,TypeMove type=TypeMove.All) //определяет один конктретный ход у
+        protected IEnumerable<(FieldPoint, TypeMove)> PartOfMove(FieldPoint direct, int lenMove,TypeMove type=TypeMove.All) //определяет один конктретный ход у
                                                                                                                   //фигуры или одну линию ходов, если фигура ходит линиями.
                                                                                                                   //(без учета фигур на поле)
         {
@@ -32,7 +32,7 @@ namespace Classes
 
             for (int i = 1; i <= lenMove; i++)//длина линии
             {
-                Point newP = new Point(_p.y + direct.y*i, _p.x + direct.x*i);// вычисление клетки следующего шага
+                FieldPoint newP = new FieldPoint(_p.y + direct.y*i, _p.x + direct.x*i);// вычисление клетки следующего шага
 
                 if (newP.x <= maxX && newP.x >= 0 && newP.y <= maxY && newP.y >= 0) //определение, находиться ли клетка внутри поля
                 {
@@ -47,7 +47,7 @@ namespace Classes
             }
         }
             
-        protected IEnumerable<IEnumerable<(Point, TypeMove)>>  FormingMove(int lenMoves, Point[] directions) //формирует набор из линий. Для пешки метод не применяется
+        protected IEnumerable<IEnumerable<(FieldPoint, TypeMove)>>  FormingMove(int lenMoves, FieldPoint[] directions) //формирует набор из линий. Для пешки метод не применяется
         {
 
             foreach (var direction in directions)

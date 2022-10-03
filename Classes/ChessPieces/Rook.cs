@@ -8,18 +8,18 @@ namespace Classes
 {
     public class Rook : ChessPiece, ISaveDirectionPoints
     {
-        public Rook(Point p, PlayerSide side) : base(p, side)
+        public Rook(FieldPoint p, PlayerSide side) : base(p, side)
         {
 
         }
 
         public override ChPType ChPType => ChPType.Rook;
 
-        public Point[] directionPoints => new Point[] { new Point(1, 0), new Point(-1, 0), new Point(0, 1), new Point(0, -1)};
+        public FieldPoint[] directionPoints => new FieldPoint[] { new FieldPoint(1, 0), new FieldPoint(-1, 0), new FieldPoint(0, 1), new FieldPoint(0, -1)};
 
         private int lenMove = 7;
 
-        public override IEnumerable<IEnumerable<(Point, TypeMove)>> GetMoves()
+        public override IEnumerable<IEnumerable<(FieldPoint, TypeMove)>> GetMoves()
         {
 
             return FormingMove(lenMove, directionPoints);

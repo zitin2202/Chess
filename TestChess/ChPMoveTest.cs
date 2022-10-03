@@ -14,7 +14,7 @@ namespace TestChess
         [Theory]
         [MemberData(nameof(GetData))]
 
-        public void BishopMove(IEnumerable<(Point, TypeMove)> list, Point[] expected)
+        public void BishopMove(IEnumerable<(FieldPoint, TypeMove)> list, FieldPoint[] expected)
         {
             int i = 0;
             foreach (var el in list)
@@ -27,9 +27,9 @@ namespace TestChess
 
         public static IEnumerable<object[]> GetData()
         {
-            Point p = new Point(0, 2);
+            FieldPoint p = new FieldPoint(0, 2);
             Field f = new Field();
-            yield return new object[] { f.GetChP(p).GetMoves(), new Point[7] { new Point(1,3), new Point(2, 4), new Point(3, 5), new Point(4, 6), new Point(5, 7), new Point(1, 1), new Point(2, 0) } };
+            yield return new object[] { f.GetChP(p).GetMoves(), new FieldPoint[7] { new FieldPoint(1,3), new FieldPoint(2, 4), new FieldPoint(3, 5), new FieldPoint(4, 6), new FieldPoint(5, 7), new FieldPoint(1, 1), new FieldPoint(2, 0) } };
         }
 
     }

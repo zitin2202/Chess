@@ -12,11 +12,8 @@ namespace Chess
         static void Main(string[] args)
         {
 
-            Game game = new Game(new Field());
-
-
-            game.Start();
-
+            ConsoleUI UI = new ConsoleUI(new Game(new Field()));
+            UI.Game.Start();
 
 
             //game.Select(new)

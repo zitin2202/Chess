@@ -7,20 +7,20 @@ namespace Classes
 {
     public class King : ChessPiece, ISaveDirectionPoints
     {
-        public King(Point p, PlayerSide side) : base(p, side)
+        public King(FieldPoint p, PlayerSide side) : base(p, side)
         {
         }
 
         public override ChPType ChPType => ChPType.King;
 
-        public  Point[] directionPoints => new Point[] {new Point(1, 0), new Point(-1, 0),
-                new Point(0, 1), new Point(0, -1), new Point(1, 1),
-                new Point(1, -1), new Point(-1, 1), new Point(-1, -1),new Point(0,2),new Point(0,-2)};
+        public  FieldPoint[] directionPoints => new FieldPoint[] {new FieldPoint(1, 0), new FieldPoint(-1, 0),
+                new FieldPoint(0, 1), new FieldPoint(0, -1), new FieldPoint(1, 1),
+                new FieldPoint(1, -1), new FieldPoint(-1, 1), new FieldPoint(-1, -1),new FieldPoint(0,2),new FieldPoint(0,-2)};
 
 
         private int lenMove = 1;
 
-        public override IEnumerable<IEnumerable<(Point, TypeMove)>> GetMoves()
+        public override IEnumerable<IEnumerable<(FieldPoint, TypeMove)>> GetMoves()
         {
             for (int i = 0; i < 8; i++)
             {

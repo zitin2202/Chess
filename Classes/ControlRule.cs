@@ -8,8 +8,8 @@ namespace Classes
     public class ControlRule
     {
         private bool[,] _unsafeCell = new bool[Field.maxY, Field.maxX];
-        private Dictionary<ChessPiece, List<Point>> _protectKing;
-        private List<List<Point>> _checkLines;
+        private Dictionary<ChessPiece, List<FieldPoint>> _protectKing;
+        private List<List<FieldPoint>> _checkLines;
         private Game _game;
 
 
@@ -18,16 +18,16 @@ namespace Classes
             _game = game;
         }
         ///определяет, какие ходы опасны для короля, какие фигуры защищают короля(и их передвижение ограничено), и какие фигуры поставили шах
-        private void SecurityCheckChP(ChessPiece thisChP, IEnumerable<IEnumerable<(Point, TypeMove)>> list)
+        private void SecurityCheckChP(ChessPiece thisChP, IEnumerable<IEnumerable<(FieldPoint, TypeMove)>> list)
         {
             foreach (var line in list)
             {
                 bool check = false;
-                (ChessPiece, List<Point>) interval = (null, new List<Point>());
+                (ChessPiece, List<FieldPoint>) interval = (null, new List<FieldPoint>());
                 interval.Item2.Add(thisChP._p);
                 foreach (var i in line)
                 {
-                    Point p = i.Item1;
+                    FieldPoint p = i.Item1;
                     TypeMove type = i.Item2;
                     ChessPiece cellChP = _game._field.GetChP(p);
 
@@ -92,14 +92,14 @@ namespace Classes
 
         public void SecurityCheckAll()//проверка всех вражеских фигур на предмет опасности для короля
         {
-            _protectKing = new Dictionary<ChessPiece, List<Point>>();
-            _checkLines = new List<List<Point>>();
+            _protectKing = new Dictionary<ChessPiece, List<FieldPoint>>();
+            _checkLines = new List<List<FieldPoint>>();
             _unsafeCell = new bool[Field.maxY, Field.maxX];
             for (int y = 0; y < Field.maxY; y++)
             {
                 for (int x = 0; x < Field.maxY; x++)
                 {
-                    ChessPiece chP = _game._field.GetChP(new Point(y, x));
+                    ChessPiece chP = _game._field.GetChP(new FieldPoint(y, x));
                     if (chP != null && chP.Side != (PlayerSide)_game._turn.Current)
                     {
                         SecurityCheckChP(chP, chP.GetMoves());
@@ -127,7 +127,7 @@ namespace Classes
 
 
         }
-        public bool AccessCell(Point p, ChessPiece chP)//определяет безопасен ли данный ход для короля
+        public bool AccessCell(FieldPoint p, ChessPiece chP)//определяет безопасен ли данный ход для короля
         {
             bool access = true;
             int lenCheckLines = (_checkLines != null ? _checkLines.Count : 0);
@@ -162,19 +162,19 @@ namespace Classes
         }
 
 
-        public bool AccessCastling(ChessPiece king, Point targetP)
+        public bool AccessCastling(ChessPiece king, FieldPoint targetP)
         {
             int shift = CastlingShift(king, targetP);
 
             int direction = Math.Sign(shift);
 
-            ChessPiece targetCell = _game._field.GetChP(new Point(king._p.y, king._p.x + shift));
+            ChessPiece targetCell = _game._field.GetChP(new FieldPoint(king._p.y, king._p.x + shift));
             if (targetCell != null && targetCell.ChPType == ChPType.Rook && king.StartPosition && targetCell.StartPosition)
             {
-                Point cell;
+                FieldPoint cell;
                 for (int i = 1; i < Math.Abs(shift); i++)
                 {
-                    cell = new Point(king._p.y, king._p.x + i * direction);
+                    cell = new FieldPoint(king._p.y, king._p.x + i * direction);
                     if (_game._field.GetChP(cell)!=null || _unsafeCell[cell.y,cell.x])
                     {
                         return false;
@@ -189,7 +189,7 @@ namespace Classes
 
         }
 
-        public int CastlingShift(ChessPiece king, Point targetP)
+        public int CastlingShift(ChessPiece king, FieldPoint targetP)
         {
             int shift;
 
@@ -206,9 +206,9 @@ namespace Classes
         }
 
 
-        private bool InInterval(Point p, List<Point> interval)
+        private bool InInterval(FieldPoint p, List<FieldPoint> interval)
         {
-            foreach (Point i in interval)
+            foreach (FieldPoint i in interval)
             {
                 if (p == i)
                 {

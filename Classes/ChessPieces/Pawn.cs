@@ -9,7 +9,7 @@ namespace Classes
 {
     public class Pawn : ChessPiece, ISaveDirectionPoints
     {
-        public Pawn(Point p, PlayerSide side) : base(p, side)
+        public Pawn(FieldPoint p, PlayerSide side) : base(p, side)
         {
             yDirect = (Side == PlayerSide.First ? -1 : 1);
 
@@ -19,9 +19,9 @@ namespace Classes
         public override ChPType ChPType => ChPType.Pawn;
 
         int yDirect;
-        public Point[] directionPoints => new Point[3] { new Point(yDirect, 0), new Point(yDirect, 1), new Point(yDirect, -1) };
+        public FieldPoint[] directionPoints => new FieldPoint[3] { new FieldPoint(yDirect, 0), new FieldPoint(yDirect, 1), new FieldPoint(yDirect, -1) };
 
-        public override IEnumerable<IEnumerable<(Point, TypeMove)>> GetMoves()
+        public override IEnumerable<IEnumerable<(FieldPoint, TypeMove)>> GetMoves()
         {
             
             int lenMove = (StartPosition ? 2 : 1);
