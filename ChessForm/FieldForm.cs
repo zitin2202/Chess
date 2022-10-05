@@ -27,8 +27,8 @@ namespace ChessForm
             _UI = UI;
             btnSize = UI._btnSize;
 
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
 
 
 

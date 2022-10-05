@@ -8,16 +8,20 @@ namespace Classes
 {
     public class Game
     {
-        public Field _field;
-        public ControlRule _rule;
-        public IEnumerator _turn;
-        public (ChessPiece, TypeMove[,]) _activeChP;
-        private Dictionary<ChessPiece, List<(FieldPoint, TypeMove)>> _allMovesPoints;
-        public IUI _UI;
-        Bot _bot;
+        public delegate void FieldPointDelegate(FieldPoint beforePoint, FieldPoint afterPoint);
+        public event FieldPointDelegate ChessPieceSetEvent;
+
         public delegate void PromotionDelegate(string promotionChess);
         public event PromotionDelegate PromotionEvent;
         Func<FieldPoint> _methodGetMove;
+        public Field _field;
+        public ControlRule _rule;
+        public IEnumerator _turn;
+        public (ChessPiece, TypeMove[,]) _active;
+        private Dictionary<ChessPiece, List<(FieldPoint, TypeMove)>> _allMovesPoints;
+        public IUI _UI;
+        Bot _bot;
+
         Dictionary<PlayerSide, PlayerType> _playersType = new Dictionary<PlayerSide, PlayerType>()
 
         {
@@ -33,7 +37,7 @@ namespace Classes
             if (_playersType.ContainsValue(PlayerType.PC))
             {
                 _bot = new Bot();
-                _field.ChessPieceSetEvent += _bot.MoveAdd;
+                ChessPieceSetEvent += _bot.MoveAdd;
                 PromotionEvent += _bot.PromotionAdd;
             }
 
@@ -41,7 +45,10 @@ namespace Classes
 
         public void Start()
         {
-            _bot._moves = "";
+            if (_bot!=null)
+            {
+                _bot._moves = "";
+            }
             _field.FieldReset();
             _rule = new ControlRule(this);
             _turn = TurnToGo();
@@ -56,7 +63,7 @@ namespace Classes
                     Victory();
                     break;
                 }
-                _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
+                _active = (null, new TypeMove[Field.maxY, Field.maxX]);
                 _UI.FieldRender();
                 _UI.TurnReport();
 
@@ -74,7 +81,7 @@ namespace Classes
 
                 p = _methodGetMove();
 
-                while (_activeChP.Item2[p.y, p.x] == 0)
+                while (_active.Item2[p.y, p.x] == 0)
                 {
                     while (!Select(p))
                     {
@@ -97,7 +104,7 @@ namespace Classes
 
         public bool Select(FieldPoint p)//выбор фигуры
         {
-            _activeChP = (null, new TypeMove[Field.maxY, Field.maxX]);
+            _active = (null, new TypeMove[Field.maxY, Field.maxX]);
             ChessPiece chP = _field.GetChP(p);
             if (!_rule.AccessChP(chP))
             {
@@ -112,13 +119,13 @@ namespace Classes
 
             if (_allMovesPoints[chP].Count>0)
             {
-                _activeChP.Item1 = chP;
+                _active.Item1 = chP;
                 foreach (var i in _allMovesPoints[chP])
                 {
                     int y = i.Item1.y;
                     int x = i.Item1.x;
 
-                    _activeChP.Item2[y,x] = i.Item2;
+                    _active.Item2[y,x] = i.Item2;
                     _UI.PossibleMove(i.Item1,i.Item2);
                 }
             }
@@ -136,9 +143,8 @@ namespace Classes
 
         public bool Action(FieldPoint p)//перемещение фигуры
         {
-            var active = _activeChP;
 
-            if (active.Item2[p.y,p.x] == 0)
+            if (_active.Item2[p.y,p.x] == 0)
             {
                 _UI.HaventSuchMove();
                 return false;
@@ -147,25 +153,29 @@ namespace Classes
 
             ChessPiece targetChP = _field.GetChP(p);
 
-            switch (active.Item2[p.y, p.x])
+            if (ChessPieceSetEvent != null)
+            {
+                ChessPieceSetEvent(_active.Item1._p, p);
+
+            }
+
+            switch (_active.Item2[p.y, p.x])
             {
                 case TypeMove.Simple:
-                    Move(active.Item1, p);
-                    _UI.SimpleMove(active.Item1,p);
+                    Move(_active.Item1, p);
+                    _UI.SimpleMove(_active.Item1,p);
                     break;
 
                 case TypeMove.Attack:
-                    Move(active.Item1, p);
-                    _UI.Attack(active.Item1,p, targetChP);
+                    Move(_active.Item1, p);
+                    _UI.Attack(_active.Item1,p, targetChP);
                     break;
 
                 case TypeMove.Сastling:
-                    Сastling(active.Item1, p);
+                    Сastling(_active.Item1, p);
                     break;
 
             }
-            
-
 
             return true;
           

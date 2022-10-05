@@ -29,15 +29,17 @@ namespace ChessForm
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FieldForm));
             this.SuspendLayout();
             // 
-            // FormUI
+            // FieldForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "FormUI";
-            this.Text = "FormUI";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "FieldForm";
+            this.Text = "Сhess";
             this.Load += new System.EventHandler(this.FormUI_Load);
             this.ResumeLayout(false);
 

@@ -15,8 +15,8 @@ namespace Chess
         static void Main(string[] args)
         {
 
-            //ConsoleUI UI = new ConsoleUI(new Game(new Field()));
-            //UI.Game.Start();
+            ConsoleUI UI = new ConsoleUI(new Game(new Field()));
+            UI.Game.Start();
 
             //Bot bot = new Bot();
             //Queue<string> queue = bot.TakeAndMove();

@@ -231,7 +231,7 @@ namespace ChessForm
             }
             else
             {
-                fieldForm.Close();
+                Application.Exit();
             }
 
         }

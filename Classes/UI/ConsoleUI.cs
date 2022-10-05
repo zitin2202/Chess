@@ -76,7 +76,7 @@ namespace Classes
 
         public FieldPoint СellSelection()
         {
-            string message = (Game._activeChP.Item1 == null ? "Выберите фигуру" : "Ходы данной фигуры");
+            string message = (Game._active.Item1 == null ? "Выберите фигуру" : "Ходы данной фигуры");
             string[] s;
             FieldPoint p;
             do
@@ -96,7 +96,7 @@ namespace Classes
 
         public void NotChessPieceReport()
         {
-            Console.WriteLine("Здесь нету фигуры, которую вы могли бы взять, выберите другую");
+            Console.WriteLine("Здесь нету фигуры, которую вы могли бы взять, выберите другую\n");
         }
 
         public void SelectedСhessPiece(ChessPiece chP)
@@ -112,30 +112,30 @@ namespace Classes
 
         public void NotChessМoveReport()
         {
-            Console.WriteLine("У этой фигуры нет возможных ходов");
+            Console.WriteLine("У этой фигуры нет возможных ходов\n");
         }
 
         public void HaventSuchMove()
         {
-            Console.WriteLine("Вы не можете походить сюда");
+            Console.WriteLine("Вы не можете походить сюда\n");
         }
 
         public void SimpleMove(ChessPiece thisChP, FieldPoint targetP)
         {
-            Console.WriteLine($"{defaultStr(thisChP)}{thisChP.ChPType} идет на {(targetP.y, targetP.x)}");
+            Console.WriteLine($"\n{defaultStr(thisChP)}{thisChP.ChPType} идет на {(targetP.y, targetP.x)}\n");
 
         }
 
         public void Attack(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP)
         {
-            Console.WriteLine($"{defaultStr(thisChP)}{thisChP.ChPType} съел {targetChP.ChPType} на {(targetP.y, targetP.x)}");
+            Console.WriteLine($"\n{defaultStr(thisChP)}{thisChP.ChPType} съел {targetChP.ChPType} на {(targetP.y, targetP.x)}\n");
         }
 
         public void Сastling(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP)
         {
             string castlingType = (Game._rule.ShiftRelativeRook(thisChP, targetP) > 0 ? "короткую" : "длинную");
 
-            Console.WriteLine($"{defaultStr(thisChP)} совершает {castlingType} рокировку");
+            Console.WriteLine($"\n{defaultStr(thisChP)} совершает {castlingType} рокировку\n");
 
 
         }

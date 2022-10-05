@@ -11,8 +11,6 @@ namespace Classes
 
         private ChessPiece[,] _cells;
 
-        public delegate void FieldPointDelegate(FieldPoint beforePoint, FieldPoint afterPoint);
-        public event FieldPointDelegate ChessPieceSetEvent;
 
         public Field()
         {
@@ -43,10 +41,6 @@ namespace Classes
 
                 if (chP != null)
                 {
-                    if (ChessPieceSetEvent != null && chP._p != p)
-                    {
-                        ChessPieceSetEvent(chP._p,p);
-                    }
 
                     chP._p = p;
                     chP.StartPosition = false;
