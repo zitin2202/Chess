@@ -76,12 +76,12 @@ namespace Classes
 
         public FieldPoint СellSelection()
         {
-            string message = (Game._activeChP.Item1 == null ? "Выберите фигуру" : "Сделайте ход");
+            string message = (Game._activeChP.Item1 == null ? "Выберите фигуру" : "Ходы данной фигуры");
             string[] s;
             FieldPoint p;
             do
             {
-                Console.WriteLine(message);
+                Console.WriteLine(message+"\n");
                 s = Console.ReadLine().Split(",");
 
             }
@@ -146,18 +146,18 @@ namespace Classes
 
         }
 
-        public Type СhoiceChessPiece()
+        public Type Promotion()
         {
             Console.WriteLine("Пешка дошла до конца доски\nВыберите, на какую фигуру ее поменять");
-            Console.WriteLine("B - слон, K - лошадь,  R - ладья, Q - ферзь");
+            Console.WriteLine("b - слон, n - лошадь,  r - ладья, q - ферзь");
             string input;
             do
             {
-                input = Console.ReadLine().ToUpper();
+                input = Console.ReadLine().ToLower();
             }
             while (!Validation.ConsoleСhoiceChPValidation(input));
 
-            return Data.StrToChPType[input];
+            return Data.StrToChPClass[input];
 
 
         }

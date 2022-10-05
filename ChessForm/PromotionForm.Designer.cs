@@ -1,7 +1,7 @@
 ﻿
 namespace ChessForm
 {
-    partial class СhoiceChessPiece
+    partial class СhoiceChessPieceForm
     {
         /// <summary>
         /// Required designer variable.
@@ -31,12 +31,13 @@ namespace ChessForm
         {
             this.SuspendLayout();
             // 
-            // СhoiceChessPiece
+            // СhoiceChessPieceForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "СhoiceChessPiece";
+            this.ClientSize = new System.Drawing.Size(288, 180);
+            this.Name = "СhoiceChessPieceForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "СhoiceChessPiece";
             this.Load += new System.EventHandler(this.СhoiceChessPiece_Load);
             this.ResumeLayout(false);

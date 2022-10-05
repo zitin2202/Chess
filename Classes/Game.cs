@@ -14,15 +14,34 @@ namespace Classes
         public (ChessPiece, TypeMove[,]) _activeChP;
         private Dictionary<ChessPiece, List<(FieldPoint, TypeMove)>> _allMovesPoints;
         public IUI _UI;
+        Bot _bot;
+        public delegate void PromotionDelegate(string promotionChess);
+        public event PromotionDelegate PromotionEvent;
+        Func<FieldPoint> _methodGetMove;
+        Dictionary<PlayerSide, PlayerType> _playersType = new Dictionary<PlayerSide, PlayerType>()
+
+        {
+            {PlayerSide.First, PlayerType.Human},
+            {PlayerSide.Second, PlayerType.PC}
+        };
 
         public Game(Field f)
         {
             _field = f;
             _rule = new ControlRule(this);
+
+            if (_playersType.ContainsValue(PlayerType.PC))
+            {
+                _bot = new Bot();
+                _field.ChessPieceSetEvent += _bot.MoveAdd;
+                PromotionEvent += _bot.PromotionAdd;
+            }
+
         }
 
         public void Start()
         {
+            _bot._moves = "";
             _field.FieldReset();
             _rule = new ControlRule(this);
             _turn = TurnToGo();
@@ -43,16 +62,27 @@ namespace Classes
 
 
                 FieldPoint p;
-                p = _UI.СellSelection();
+                if (_playersType[(PlayerSide)_turn.Current] == PlayerType.Human)
+                {
+                    _methodGetMove = _UI.СellSelection;
+
+                }
+                else
+                {
+                    _methodGetMove = _bot.СhooseChpAndMove();
+                }
+
+                p = _methodGetMove();
+
                 while (_activeChP.Item2[p.y, p.x] == 0)
                 {
                     while (!Select(p))
                     {
-                        p = _UI.СellSelection();
+                        p = _methodGetMove();
 
                     }
 
-                    p = _UI.СellSelection();
+                    p = _methodGetMove();
 
                 }
                
@@ -149,7 +179,7 @@ namespace Classes
             if (chP.ChPType == ChPType.Pawn && _rule.PawnTransformationAccess(chP))
             {
                 _UI.FieldRender();
-                PawnTransformation(chP);
+                Promotion(chP);
 
             }
         }
@@ -254,10 +284,24 @@ namespace Classes
 
         }
 
-        private void PawnTransformation(ChessPiece chP)
+        private void Promotion(ChessPiece chP)
         {
-           Type classChP = _UI.СhoiceChessPiece();
-           ChessPiece newChP = (ChessPiece)Activator.CreateInstance(classChP, chP._p,chP.Side);
+            Type classChP;
+            if (_playersType[(PlayerSide)_turn.Current] == PlayerType.Human)
+            {
+                classChP = _UI.Promotion();
+
+            }
+            else
+            {
+                classChP = _bot.PromotionSet();
+            }
+
+            if (PromotionEvent!=null)
+            {
+                PromotionEvent(Data.ChPClassToStr[classChP]);
+            }
+            ChessPiece newChP = (ChessPiece)Activator.CreateInstance(classChP, chP._p,chP.Side);
            _field.SetChP(chP._p, newChP);
 
 

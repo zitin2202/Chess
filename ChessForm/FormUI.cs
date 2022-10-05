@@ -13,12 +13,13 @@ namespace ChessForm
     {
         public Game Game { get; set;}
         public FieldForm fieldForm;
-        СhoiceChessPiece choiceForm;
+        СhoiceChessPieceForm promotionForm;
+        Size sizeDisplay = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size;
         public Dictionary<Button, FieldPoint> _points = new Dictionary<Button, FieldPoint>();
         public Dictionary<FieldPoint, Button> _buttons = new Dictionary<FieldPoint, Button>();
         bool pawnTransformtaion = false;
         Button _activeButton = null;
-        ChPType _choiceChess = 0;
+        Type _promotionChess = null;
         public int _btnSize = 80;
         public Size _sizeButtonObject;
 
@@ -33,14 +34,12 @@ namespace ChessForm
             fieldForm = new FieldForm(this);
             fieldForm.Load += FieldForm_Load;
             fieldForm.FormClosed += FieldForm_FormClosed;
-            fieldForm.Show();
-            choiceForm = new СhoiceChessPiece(this);
+            promotionForm = new СhoiceChessPieceForm(this);
+            promotionForm.Load += PromotionForm_Load;
 
 
 
         }
-
-
 
         private void FieldColorReset()
         {
@@ -60,7 +59,7 @@ namespace ChessForm
 
         }
 
-        private IEnumerator<Color> СolorSelection()
+        public IEnumerator<Color> СolorSelection()
         {
             while (true)
             {
@@ -71,16 +70,26 @@ namespace ChessForm
 
         public void Btn_Click(object sender, EventArgs e)
         {
-            _activeButton = (Button)sender;
+            if (!pawnTransformtaion)
+            {
+                _activeButton = (Button)sender;
+
+            }
         }
 
-        public void BtnChoiceChess_Click(object sender, EventArgs e)
+        public void BtnPromotion_Click(object sender, EventArgs e)
         {
-            _choiceChess = choiceForm._chessPieces[(Button)sender];
+            _promotionChess = promotionForm._chessPieces[(Button)sender];
+            promotionForm.Hide();
         }
 
         private void FieldForm_Load(object sender, EventArgs e)
         {
+            Size formSize = new Size((_btnSize + 2) * 8, (_btnSize + 5) * 8);
+            Point formLocation = new Point((sizeDisplay.Width - formSize.Width) / 2, (sizeDisplay.Height - formSize.Height) / 2);
+            fieldForm.Size = formSize;
+            fieldForm.Location = formLocation;
+
             FieldColorReset();
             Thread threadGame = new Thread(Game.Start);
             threadGame.Start();
@@ -89,6 +98,15 @@ namespace ChessForm
         {
             Application.Exit();
             System.Diagnostics.Process.GetCurrentProcess().Kill();
+        }
+
+        private void PromotionForm_Load(object sender, EventArgs e)
+        {
+            int button_size = promotionForm.btn_size.Width;
+            Size formSize = new Size(button_size, (button_size) * 4 + Data.formHeaderSize);
+            Point formLocation = new Point(fieldForm.Location.X + fieldForm.Size.Width, fieldForm.Location.Y);
+            promotionForm.Size = formSize;
+            promotionForm.Location = formLocation;
         }
 
         public void FieldRender()
@@ -141,7 +159,20 @@ namespace ChessForm
 
         public void PossibleMove(FieldPoint p, TypeMove type)
         {
-            Color color = (type == TypeMove.Simple ? Color.Gray : Color.Red);
+            Color color = Color.Gray;
+            switch (type)
+            {
+                case TypeMove.Simple:
+                    color = Color.Gray;
+                    break;
+
+                case TypeMove.Attack:
+                    color = Color.Red;
+                    break;
+                case TypeMove.Сastling:
+                    color = Color.SkyBlue;
+                    break;
+            }
             _buttons[p].BackColor = color;
 
         }
@@ -171,16 +202,23 @@ namespace ChessForm
 
         }
 
-        public Type СhoiceChessPiece()
+        public Type Promotion()
         {
             pawnTransformtaion = true;
-            foreach (var i in choiceForm._chessPieces)
+            foreach (var i in promotionForm._chessPieces)
             {
-                i.Key.Image = new Bitmap(new Bitmap($"chess_pieces\\{Game._turn.Current}\\{i.Value}.png"), i.Key.Size);
+                i.Key.Image = new Bitmap(new Bitmap($"chess_pieces\\{Game._turn.Current}\\{i.Value.Name}.png"), i.Key.Size);
             }
-            return null;
 
+            promotionForm.ShowDialog();
+            while (_promotionChess == null)
+            {
+            }
 
+            Type type = _promotionChess;
+            _promotionChess = null;
+            pawnTransformtaion = false;
+            return type;
         }
 
         public void Victory(PlayerSide victorySide)

@@ -14,9 +14,7 @@ namespace ChessForm
 
     public partial class FieldForm : Form
     {
-        Size sizeDisplay = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size;
-        Size formSize;
-        Point formLocation;
+
         FormUI _UI;
         int btnSize;
 
@@ -24,9 +22,14 @@ namespace ChessForm
 
         public FieldForm(FormUI UI)
         {
+            InitializeComponent();
+
             _UI = UI;
             btnSize = UI._btnSize;
-            InitializeComponent();
+
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+
 
 
 
@@ -37,10 +40,8 @@ namespace ChessForm
 
         private void FormUI_Load(object sender, EventArgs e)
         {
-            formSize = new Size((btnSize + 2) * 8, (btnSize + 5) * 8);
-            formLocation = new Point((sizeDisplay.Width - formSize.Width) / 2, (sizeDisplay.Height - formSize.Height) / 2);
-            this.Size = formSize;
-            this.Location = formLocation;
+
+
 
 
 

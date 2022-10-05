@@ -31,7 +31,7 @@ namespace Classes
 
         void Сastling(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP);
 
-        Type СhoiceChessPiece();
+        Type Promotion();
 
         void Victory(PlayerSide victorySide);
 

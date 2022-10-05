@@ -40,7 +40,7 @@ namespace Classes
 
         public static bool ConsoleСhoiceChPValidation(string input)
         {
-            if (Data.StrToChPType.ContainsKey(input))
+            if (Data.StrToChPClass.ContainsKey(input))
                 return true;
             else
             {
