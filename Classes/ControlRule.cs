@@ -7,7 +7,7 @@ namespace Classes
 {
     public class ControlRule
     {
-        private bool[,] _unsafeCell = new bool[Field.maxY, Field.maxX];
+        public bool[,] _unsafeCell = new bool[Field.maxY, Field.maxX];
         private Dictionary<ChessPiece, List<FieldPoint>> _protectKing;
         private List<List<FieldPoint>> _checkLines;
         private Game _game;
@@ -31,7 +31,7 @@ namespace Classes
                     TypeMove type = i.Item2;
                     ChessPiece cellChP = _game._field.GetChP(p);
 
-                    if (type == TypeMove.Simple) //если нельзя можно атаковать
+                    if (type == TypeMove.Simple || type == TypeMove.Сastling) //если нельзя атаковать
                         break;
 
                     if (cellChP == null) //все случаи, когда на клетке нету фигуры и ходом можно атаковать
@@ -78,7 +78,10 @@ namespace Classes
 
                         else
                         {
-                            _unsafeCell[p.y, p.x] = true; //учет небезопасных для короля клеток
+                            if (interval.Item1 == null)
+                            {
+                                _unsafeCell[p.y, p.x] = true; //учет небезопасных для короля клеток
+                            }
                             break;
                         }
 

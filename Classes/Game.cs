@@ -21,11 +21,13 @@ namespace Classes
         private Dictionary<ChessPiece, List<(FieldPoint, TypeMove)>> _allMovesPoints;
         public IUI _UI;
         Bot _bot;
+        bool _autoRePlay = true;
+
 
         Dictionary<PlayerSide, PlayerType> _playersType = new Dictionary<PlayerSide, PlayerType>()
 
         {
-            {PlayerSide.First, PlayerType.Human},
+            {PlayerSide.First, PlayerType.PC},
             {PlayerSide.Second, PlayerType.PC}
         };
 
@@ -77,6 +79,7 @@ namespace Classes
                 else
                 {
                     _methodGetMove = _bot.СhooseChpAndMove();
+
                 }
 
                 p = _methodGetMove();
@@ -92,7 +95,7 @@ namespace Classes
                     p = _methodGetMove();
 
                 }
-               
+
                 while (!Action(p))
                 {
 
@@ -319,9 +322,17 @@ namespace Classes
 
         private void Victory()
         {
-            _turn.MoveNext();
-            PlayerSide victorySide = (PlayerSide)_turn.Current;
-            _UI.Victory(victorySide);
+            if (_autoRePlay)
+            {
+                Start();
+            }
+            else
+            {
+                _turn.MoveNext();
+                PlayerSide victorySide = (PlayerSide)_turn.Current;
+                _UI.Victory(victorySide);
+            }
+
         }
 
 

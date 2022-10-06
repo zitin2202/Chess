@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,6 +13,10 @@ namespace Classes
         Process process;
         public string _moves = "";
         private string _promotionChess = "";
+        private int _skillLevel = 20; //min - 0, max - 20
+        private int _thinkingTime = 2000;
+        string move;
+
 
 
         public Bot()
@@ -34,27 +39,25 @@ namespace Classes
 
             StreamWriter wr = process.StandardInput;
             wr.WriteLine("setoption name threads value 12");
-            wr.WriteLine("setoption name Skill Level value 20");
+            wr.WriteLine($"setoption name Skill Level value {_skillLevel}");
             wr.WriteLine("position startpos move " + _moves);
-            wr.WriteLine("go movetime 2000");
-            Thread.Sleep(2000);
+            wr.WriteLine($"go movetime {_thinkingTime}");
+            Thread.Sleep(_thinkingTime);
             wr.Close();
-            string str = process.StandardOutput.ReadToEnd();
-            str = str.Substring(str.IndexOf("bestmove") + 9, 5);
+            move = process.StandardOutput.ReadToEnd();
+            move = move.Substring(move.IndexOf("bestmove") + 9, 5);
 
-            str = str.Trim();
-            if (str == "e1c1" && str == "e1g1")
-            {
+            move = move.Trim();
 
-            }
-            if (str.Length==5)
+            if (move.Length==5)
             {
-               _promotionChess = str.Substring(4, 1);
-                str = str.Substring(0, 4);
+               _promotionChess = move.Substring(4, 1);
+                move = move.Substring(0, 4);
             }
             Queue<string> chPAndMove = new Queue<string>();
-            chPAndMove.Enqueue(str.Substring(0, 2));
-            chPAndMove.Enqueue(str.Substring(2, 2));
+            chPAndMove.Enqueue(move.Substring(0, 2));
+            chPAndMove.Enqueue(move.Substring(2, 2));
+
             return chPAndMove;
         }
 

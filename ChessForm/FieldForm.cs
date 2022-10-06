@@ -16,8 +16,6 @@ namespace ChessForm
     {
 
         FormUI _UI;
-        int btnSize;
-
 
 
         public FieldForm(FormUI UI)
@@ -25,8 +23,6 @@ namespace ChessForm
             InitializeComponent();
 
             _UI = UI;
-            btnSize = UI._btnSize;
-
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
 
@@ -49,13 +45,12 @@ namespace ChessForm
             {
                 for (int x = 0; x < Field.maxX; x++)
                 {
-                    Button btn = new Button();
+                    ButtonCell btn = new ButtonCell(_UI);
                     FieldPoint p = new FieldPoint(y, x);
                     _UI._points[btn] = p;
                     _UI._buttons[p] = btn;
-                    btn.Click += _UI.Btn_Click;
-                    btn.Size = _UI._sizeButtonObject;
-                    btn.Location = new Point(x * btnSize, y * btnSize);
+
+                    btn.Location = new Point(x * ButtonCell.BtnSize, y * ButtonCell.BtnSize);
 
                     this.Controls.Add(btn);
 
@@ -65,7 +60,7 @@ namespace ChessForm
 
         }
 
-              
+
 
 
     }

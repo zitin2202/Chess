@@ -15,25 +15,26 @@ namespace ChessForm
         public FieldForm fieldForm;
         СhoiceChessPieceForm promotionForm;
         Size sizeDisplay = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size;
-        public Dictionary<Button, FieldPoint> _points = new Dictionary<Button, FieldPoint>();
-        public Dictionary<FieldPoint, Button> _buttons = new Dictionary<FieldPoint, Button>();
-        bool pawnTransformtaion = false;
-        Button _activeButton = null;
+        public Dictionary<ButtonCell, FieldPoint> _points = new Dictionary<ButtonCell, FieldPoint>();
+        public Dictionary<FieldPoint, ButtonCell> _buttons = new Dictionary<FieldPoint, ButtonCell>();
+        public bool pawnTransformtaion = false;
+        public ButtonCell _activeButton = null;
         Type _promotionChess = null;
-        public int _btnSize = 80;
-        public Size _sizeButtonObject;
+
 
 
 
 
         public FormUI(Game game)
         {
-            _sizeButtonObject = new Size(_btnSize, _btnSize);
+
             Game = game;
             Game._UI = this;
+
             fieldForm = new FieldForm(this);
             fieldForm.Load += FieldForm_Load;
             fieldForm.FormClosed += FieldForm_FormClosed;
+
             promotionForm = new СhoiceChessPieceForm(this);
             promotionForm.Load += PromotionForm_Load;
 
@@ -52,6 +53,10 @@ namespace ChessForm
                     colorCell.MoveNext();
 
                     _buttons[new FieldPoint(y, x)].BackColor = colorCell.Current;
+
+                    //if (Game._rule._unsafeCell[y, x])
+                    //    _buttons[new FieldPoint(y, x)].BackColor = Color.OrangeRed;
+
                 }
 
                 colorCell.MoveNext();
@@ -63,6 +68,7 @@ namespace ChessForm
         {
             while (true)
             {
+
                 yield return Color.DarkSlateGray;
                 yield return Color.White;
             }
@@ -72,7 +78,7 @@ namespace ChessForm
         {
             if (!pawnTransformtaion)
             {
-                _activeButton = (Button)sender;
+                _activeButton = (ButtonCell)sender;
 
             }
         }
@@ -85,7 +91,7 @@ namespace ChessForm
 
         private void FieldForm_Load(object sender, EventArgs e)
         {
-            Size formSize = new Size((_btnSize + 2) * 8, (_btnSize + 5) * 8);
+            Size formSize = new Size((ButtonCell.BtnSize + 2) * 8, (ButtonCell.BtnSize + 5) * 8);
             Point formLocation = new Point((sizeDisplay.Width - formSize.Width) / 2, (sizeDisplay.Height - formSize.Height) / 2);
             fieldForm.Size = formSize;
             fieldForm.Location = formLocation;
@@ -102,7 +108,7 @@ namespace ChessForm
 
         private void PromotionForm_Load(object sender, EventArgs e)
         {
-            int button_size = promotionForm.btn_size.Width;
+            int button_size = ButtonPromotion.ObjectSize.Width;
             Size formSize = new Size(button_size, (button_size) * 4 + Data.formHeaderSize);
             Point formLocation = new Point(fieldForm.Location.X + fieldForm.Size.Width, fieldForm.Location.Y);
             promotionForm.Size = formSize;
@@ -117,7 +123,7 @@ namespace ChessForm
                 ChessPiece chP = Game._field.GetChP(i.Value);
                 if (chP != null)
                 {
-                    Bitmap bitmap = new Bitmap(new Bitmap($"chess_pieces\\{chP.Side}\\{chP.ChPType}.png"), i.Key.Size);
+                    Bitmap bitmap = new Bitmap(new Bitmap($"chess_pieces\\{chP.Side}\\{chP.ChPType}.png"), ButtonCell.SizeImage);
                     i.Key.Image = bitmap;
 
                 }
@@ -207,7 +213,7 @@ namespace ChessForm
             pawnTransformtaion = true;
             foreach (var i in promotionForm._chessPieces)
             {
-                i.Key.Image = new Bitmap(new Bitmap($"chess_pieces\\{Game._turn.Current}\\{i.Value.Name}.png"), i.Key.Size);
+                i.Key.Image = new Bitmap(new Bitmap($"chess_pieces\\{Game._turn.Current}\\{i.Value.Name}.png"), ButtonPromotion.SizeImage);
             }
 
             promotionForm.ShowDialog();

@@ -13,35 +13,32 @@ namespace ChessForm
 {
     public partial class СhoiceChessPieceForm : Form
     {
-        private Type[] chPClasses = new Type[] { typeof(Bishop), typeof(Knight), typeof(Rook), typeof(Queen)};
+        private Type[] chPClasses = new Type[] { Data.StrToChPClass["b"], Data.StrToChPClass["n"], Data.StrToChPClass["r"], Data.StrToChPClass["q"]};
         public Dictionary<Button, Type> _chessPieces;
         private FormUI _UI;
-        public Size btn_size;
         public СhoiceChessPieceForm(FormUI UI)
         {
             InitializeComponent();
 
-            this.ControlBox = false;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.TopLevel = true;
+            ControlBox = false;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            TopLevel = true;
 
             _chessPieces = new Dictionary<Button, Type>();
             _UI = UI;
 
-            btn_size = (_UI._btnSize < Data.minFullScreenButton ? new Size(Data.minFullScreenButton, Data.minFullScreenButton) : _UI._sizeButtonObject);
             var btnColor = _UI.СolorSelection();
 
             for (int i = 0; i < 4; i++)
             {
-                Button btn = new Button();
+                ButtonPromotion btn = new ButtonPromotion(_UI);
                 btnColor.MoveNext();
                 btn.BackColor = btnColor.Current;
                 _chessPieces.Add(btn, chPClasses[i]);
-                btn.Size = btn_size;
                 btn.Location = new Point(0, i * btn.Height);
-                btn.Click += _UI.BtnPromotion_Click;
+                
 
-                this.Controls.Add(btn);
+                Controls.Add(btn);
                 
             }
         }
