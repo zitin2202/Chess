@@ -16,7 +16,8 @@ namespace Classes
         private string _promotionChess = "";
         private int _skillLevel = 20; //min - 0, max - 20
         private int _thinkingTime = 2000;
-
+        //private static string root = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName;
+        //string FileName = Path.Combine(root, "stockfish.exe");
 
 
         public Bot()
