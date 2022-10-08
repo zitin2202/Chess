@@ -9,6 +9,8 @@ namespace Classes
         public int y { get; set; }
         public int x { get; set; }
 
+        public int xx { get; set; }
+
         public Point(int y, int x)
         {
             this.y = y;
