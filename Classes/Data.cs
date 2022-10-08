@@ -41,6 +41,12 @@ namespace Classes
             {typeof(Queen),"q"},
         };
 
+        public static Dictionary<string, PlayerType> RuPlayerType = new Dictionary<string, PlayerType>()
+        {
+            {"Человек",PlayerType.PC},
+            {"Компьютер",PlayerType.PC}
+        };
+
         public static int formHeaderSize = 39;
         public static int minFullScreenButton = 120;
 

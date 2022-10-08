@@ -8,11 +8,6 @@ namespace Classes
 {
     public class Game
     {
-        public delegate void FieldPointDelegate(FieldPoint beforePoint, FieldPoint afterPoint);
-        public event FieldPointDelegate ChessPieceSetEvent;
-
-        public delegate void PromotionDelegate(string promotionChess);
-        public event PromotionDelegate PromotionEvent;
         Func<FieldPoint> _methodGetMove;
         public Field _field;
         public ControlRule _rule;
@@ -21,13 +16,12 @@ namespace Classes
         private Dictionary<ChessPiece, List<(FieldPoint, TypeMove)>> _allMovesPoints;
         public IUI _UI;
         Bot _bot;
-        bool _autoRePlay = true;
+        bool _autoRePlay = false;
 
 
-        Dictionary<PlayerSide, PlayerType> _playersType = new Dictionary<PlayerSide, PlayerType>()
-
+        public Dictionary<PlayerSide, PlayerType> _playersType { get;} = new Dictionary<PlayerSide, PlayerType>()
         {
-            {PlayerSide.First, PlayerType.PC},
+            {PlayerSide.First, PlayerType.Human},
             {PlayerSide.Second, PlayerType.PC}
         };
 
@@ -39,8 +33,6 @@ namespace Classes
             if (_playersType.ContainsValue(PlayerType.PC))
             {
                 _bot = new Bot();
-                ChessPieceSetEvent += _bot.MoveAdd;
-                PromotionEvent += _bot.PromotionAdd;
             }
 
         }
@@ -156,9 +148,9 @@ namespace Classes
 
             ChessPiece targetChP = _field.GetChP(p);
 
-            if (ChessPieceSetEvent != null)
+            if (_bot != null)
             {
-                ChessPieceSetEvent(_active.Item1._p, p);
+                _bot.MoveAdd(_active.Item1._p, p);
 
             }
 
@@ -310,9 +302,9 @@ namespace Classes
                 classChP = _bot.PromotionSet();
             }
 
-            if (PromotionEvent!=null)
+            if (_bot!=null)
             {
-                PromotionEvent(Data.ChPClassToStr[classChP]);
+                _bot.PromotionAdd(Data.ChPClassToStr[classChP]);
             }
             ChessPiece newChP = (ChessPiece)Activator.CreateInstance(classChP, chP._p,chP.Side);
            _field.SetChP(chP._p, newChP);
@@ -335,6 +327,12 @@ namespace Classes
 
         }
 
+
+        public void PlayerTypeChange(PlayerSide side, PlayerType type)
+        {
+            _playersType[side] = type;
+
+        }
 
     }
 

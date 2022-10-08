@@ -14,12 +14,13 @@ namespace ChessForm
         public Game Game { get; set;}
         public FieldForm fieldForm;
         СhoiceChessPieceForm promotionForm;
-        Size sizeDisplay = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size;
+        public Size sizeDisplay = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size;
         public Dictionary<ButtonCell, FieldPoint> _points = new Dictionary<ButtonCell, FieldPoint>();
         public Dictionary<FieldPoint, ButtonCell> _buttons = new Dictionary<FieldPoint, ButtonCell>();
         public bool pawnTransformtaion = false;
         public ButtonCell _activeButton = null;
         Type _promotionChess = null;
+        bool _helpInGame = false;
 
 
 
@@ -54,8 +55,12 @@ namespace ChessForm
 
                     _buttons[new FieldPoint(y, x)].BackColor = colorCell.Current;
 
-                    //if (Game._rule._unsafeCell[y, x])
-                    //    _buttons[new FieldPoint(y, x)].BackColor = Color.OrangeRed;
+                    if (_helpInGame && Game._playersType[(PlayerSide)Game._turn.Current] == PlayerType.Human)
+                    {
+                        if (Game._rule._unsafeCell[y, x])
+                            _buttons[new FieldPoint(y, x)].BackColor = Color.OrangeRed;
+                    }
+
 
                 }
 
@@ -91,11 +96,6 @@ namespace ChessForm
 
         private void FieldForm_Load(object sender, EventArgs e)
         {
-            Size formSize = new Size((ButtonCell.BtnSize + 2) * 8, (ButtonCell.BtnSize + 5) * 8);
-            Point formLocation = new Point((sizeDisplay.Width - formSize.Width) / 2, (sizeDisplay.Height - formSize.Height) / 2);
-            fieldForm.Size = formSize;
-            fieldForm.Location = formLocation;
-
             FieldColorReset();
             Thread threadGame = new Thread(Game.Start);
             threadGame.Start();
@@ -241,6 +241,28 @@ namespace ChessForm
             }
 
         }
+
+        public void MenuItemPlayer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ToolStripComboBox ComboBox = (ToolStripComboBox)sender;
+            PlayerSide side = (PlayerSide)Enum.Parse(typeof(PlayerSide), ComboBox.Name);
+            PlayerType type = (PlayerType)ComboBox.SelectedIndex;
+
+            Game.PlayerTypeChange(side, type);
+
+        }
+
+        public void HelpInGame_CheckedChanged(object sender, EventArgs e)
+        {
+            ToolStripMenuItem itemHelp = (ToolStripMenuItem)sender;
+            _helpInGame = itemHelp.Checked;
+
+            FieldColorReset();
+
+
+
+        }
+
 
     }
 }

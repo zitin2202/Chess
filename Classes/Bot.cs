@@ -12,10 +12,10 @@ namespace Classes
     {
         Process process;
         public string _moves = "";
+        string _move;
         private string _promotionChess = "";
         private int _skillLevel = 20; //min - 0, max - 20
         private int _thinkingTime = 2000;
-        string move;
 
 
 
@@ -44,19 +44,19 @@ namespace Classes
             wr.WriteLine($"go movetime {_thinkingTime}");
             Thread.Sleep(_thinkingTime);
             wr.Close();
-            move = process.StandardOutput.ReadToEnd();
-            move = move.Substring(move.IndexOf("bestmove") + 9, 5);
+            _move = process.StandardOutput.ReadToEnd();
+            _move = _move.Substring(_move.IndexOf("bestmove") + 9, 5);
 
-            move = move.Trim();
+            _move = _move.Trim();
 
-            if (move.Length==5)
+            if (_move.Length==5)
             {
-               _promotionChess = move.Substring(4, 1);
-                move = move.Substring(0, 4);
+               _promotionChess = _move.Substring(4, 1);
+                _move = _move.Substring(0, 4);
             }
             Queue<string> chPAndMove = new Queue<string>();
-            chPAndMove.Enqueue(move.Substring(0, 2));
-            chPAndMove.Enqueue(move.Substring(2, 2));
+            chPAndMove.Enqueue(_move.Substring(0, 2));
+            chPAndMove.Enqueue(_move.Substring(2, 2));
 
             return chPAndMove;
         }
@@ -64,6 +64,8 @@ namespace Classes
 
         public Func<FieldPoint> СhooseChpAndMove()
         {
+            string movee = _move;
+            string movees = _moves;
             Queue<string> chPAndMove = TakeAndMove();
             return () => { return Data.GetPointUsingName(chPAndMove.Dequeue()); };
         }
