@@ -234,7 +234,18 @@ namespace ChessForm
 
         public void Victory(PlayerSide victorySide)
         {
-            var result = MessageBox.Show($"Победила сторона {victorySide}\nХотите сыграть снова?", "Игра окончена", MessageBoxButtons.YesNo);
+            End($"Победила сторона {victorySide}");
+
+        }
+
+        public void Draw()
+        {
+            End($"Ничья!");
+        }
+
+        private void End(string text)
+        {
+            var result = MessageBox.Show(text + "\nХотите сыграть снова?", "Игра окончена", MessageBoxButtons.YesNo);
 
             if (result == DialogResult.Yes)
             {
@@ -244,7 +255,6 @@ namespace ChessForm
             {
                 Application.Exit();
             }
-
         }
 
         public void MenuItemPlayer_SelectedIndexChanged(object sender, EventArgs e)

@@ -17,6 +17,11 @@ namespace Classes
         public IUI _UI;
         Bot _bot;
         bool _autoRePlay = false;
+        public Dictionary<PlayerSide, int> RelativeValueCount = new Dictionary<PlayerSide, int>()
+        {
+            {PlayerSide.First, 0},
+            {PlayerSide.Second, 0}
+        };
 
 
         public Dictionary<PlayerSide, PlayerType> _playersType { get;} = new Dictionary<PlayerSide, PlayerType>()
@@ -46,13 +51,21 @@ namespace Classes
             while (true)
             {
                 _turn.MoveNext();
+
+                RelativeValueCount[PlayerSide.First] = 0;
+                RelativeValueCount[PlayerSide.Second] = 0;
+
                 _rule.SecurityCheckAll();
-                if (!allPossibleMoves())
+                Outcome outcome = allPossibleMoves();
+
+                if (outcome != Outcome.Сontinue)
                 {
                     _UI.FieldRender();
-                    Victory();
+                    End(outcome);
                     break;
+
                 }
+
                 _active = (null, new TypeMove[Field.maxY, Field.maxX]);
                 _UI.FieldRender();
                 _UI.TurnReport();
@@ -250,20 +263,27 @@ namespace Classes
                     else if (cellChP == null && type != TypeMove.Attack) //на клетке нету фигуры и можно походить без атаки                     
                             result = TypeMove.Simple;
 
-                    //на клетке есть вражеская и данным ходом можно атаковать
+                    //данным ходом можно атаковать
                     else if (type != TypeMove.Simple)
                     {
+                        //на клетке есть вражеская фигура
                         if (cellChP != null && thisChP.Side != cellChP.Side)
                         {
                             result = TypeMove.Attack;
                         }
-                        else if(_rule.EnPassentAccess(thisChP,p))
+                        //фигура(пешка) может выполнить взятие на проходе
+                        else if (_rule.EnPassentAccess(thisChP,p))
                         {
                             result = TypeMove.EnPassant;
                         }
+
+                        else
+                            break;
                     }
+
                     else
                         break;
+
 
 
                     if (result!=0 && _rule.AccessCell(thisChP, p))
@@ -292,10 +312,10 @@ namespace Classes
 
         }
 
-        private bool allPossibleMoves()
+        private Outcome allPossibleMoves()
         {
             _allMovesPoints = new Dictionary<ChessPiece, List<(FieldPoint, TypeMove)>>();
-            int count = 0;
+            int MovesCount = 0;
 
             for (int y = 0; y < Field.maxY; y++)
             {
@@ -305,17 +325,37 @@ namespace Classes
                     if (chP != null && chP.Side == (PlayerSide)_turn.Current)
                     {
                         _allMovesPoints[chP] = EditMoves(chP, chP.GetMoves());
-                        count += _allMovesPoints[chP].Count;
+                        //подсчет фигур которые имеют ходы (само количество ходов не считается)
+                        MovesCount += _allMovesPoints[chP].Count;
+                        RelativeValueCount[chP.Side] += chP.RelativeValue;
                     }
 
                 }
 
             }
 
-            if (count > 0)
-                return true;
+            if (MovesCount > 0)
+
+                if (RelativeValueCount[PlayerSide.First] > 3 && RelativeValueCount[PlayerSide.Second] > 3)
+                {
+                    return Outcome.Сontinue;
+                }
+                else
+                {
+                    return Outcome.Draw;
+                }
             else
-                return false;
+            {
+                if (_rule.IsCheckmate())
+                {
+                    return Outcome.Victory;
+                }
+                else
+                {
+                    return Outcome.Draw;
+                }
+
+            }
 
         }
 
@@ -342,7 +382,7 @@ namespace Classes
 
         }
 
-        private void Victory()
+        private void End(Outcome outcome)
         {
             if (_autoRePlay)
             {
@@ -350,9 +390,19 @@ namespace Classes
             }
             else
             {
-                _turn.MoveNext();
-                PlayerSide victorySide = (PlayerSide)_turn.Current;
-                _UI.Victory(victorySide);
+                switch (outcome)
+                {
+                    case Outcome.Victory:
+                        _turn.MoveNext();
+                        PlayerSide victorySide = (PlayerSide)_turn.Current;
+                        _UI.Victory(victorySide);
+                        break;
+
+                    case Outcome.Draw:
+                        _UI.Draw();
+                        break;
+                }
+
             }
 
         }
@@ -361,7 +411,6 @@ namespace Classes
         public void PlayerTypeChange(PlayerSide side, PlayerType type)
         {
             _playersType[side] = type;
-
         }
 
     }

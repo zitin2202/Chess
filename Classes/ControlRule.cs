@@ -107,6 +107,10 @@ namespace Classes
                     if (chP != null && chP.Side != (PlayerSide)_game._turn.Current)
                     {
                         SecurityCheckChP(chP, chP.GetMoves());
+
+                        _game.RelativeValueCount[chP.Side] += chP.RelativeValue;
+
+
                     }
 
                 }
@@ -256,6 +260,16 @@ namespace Classes
             {
                 return false;
             }
+        }
+
+        public bool IsCheckmate()
+        {
+            if (_checkLines.Count>0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
     }

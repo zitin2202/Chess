@@ -35,5 +35,7 @@ namespace Classes
 
         void Victory(PlayerSide victorySide);
 
+        void Draw();
+
     }
 }

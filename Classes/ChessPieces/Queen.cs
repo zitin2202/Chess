@@ -14,6 +14,7 @@ namespace Classes
 
         public override ChPType ChPType => ChPType.Queen;
 
+        public override int RelativeValue => 9;
 
         public override IEnumerable<IEnumerable<(FieldPoint, TypeMove)>> GetMoves()
         {

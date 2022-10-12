@@ -13,7 +13,10 @@ namespace Classes
 
         public override ChPType ChPType => ChPType.King;
 
-        public  FieldPoint[] directionPoints => new FieldPoint[] {new FieldPoint(1, 0), new FieldPoint(-1, 0),
+        public override int RelativeValue => 0;
+
+
+        public FieldPoint[] directionPoints => new FieldPoint[] {new FieldPoint(1, 0), new FieldPoint(-1, 0),
                 new FieldPoint(0, 1), new FieldPoint(0, -1), new FieldPoint(1, 1),
                 new FieldPoint(1, -1), new FieldPoint(-1, 1), new FieldPoint(-1, -1),new FieldPoint(0,2),new FieldPoint(0,-2)};
 

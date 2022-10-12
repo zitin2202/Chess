@@ -168,6 +168,12 @@ namespace Classes
             Console.WriteLine($"Шах и мат! Победила сторона {victorySide}!");
         }
 
+        public void Draw()
+        {
+            Console.WriteLine("Ничья! Конец игры");
+        }
+
+
 
 
 

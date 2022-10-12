@@ -18,6 +18,11 @@ namespace Classes
 
         public override ChPType ChPType => ChPType.Pawn;
 
+        ///значение выше чем у слона и конья, так как с королем и пешкой еще возможно победить.
+        ///(по сути, данные очки сюда вводяться только для этого)
+        public override int RelativeValue => 4;
+
+
         public int yDirect;
         public FieldPoint[] directionPoints => new FieldPoint[3] { new FieldPoint(yDirect, 0), new FieldPoint(yDirect, 1), new FieldPoint(yDirect, -1)};
 
