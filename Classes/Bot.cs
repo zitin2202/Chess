@@ -65,10 +65,10 @@ namespace Classes
 
         public Func<FieldPoint> СhooseChpAndMove()
         {
-            string movee = _move;
-            string movees = _moves;
             Queue<string> chPAndMove = TakeAndMove();
-            return () => { return Data.GetPointUsingName(chPAndMove.Dequeue()); };
+            return () => {
+                string movee = _move;
+                string movees = _moves; return Data.GetPointUsingName(chPAndMove.Dequeue()); };
         }
         public Type PromotionSet()
         {

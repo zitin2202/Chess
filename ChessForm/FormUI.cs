@@ -175,6 +175,11 @@ namespace ChessForm
                 case TypeMove.Attack:
                     color = Color.Red;
                     break;
+
+                case TypeMove.EnPassant:
+                    color = Color.Red;
+                    break;
+
                 case TypeMove.Сastling:
                     color = Color.SkyBlue;
                     break;

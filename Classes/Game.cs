@@ -22,18 +22,14 @@ namespace Classes
         public Dictionary<PlayerSide, PlayerType> _playersType { get;} = new Dictionary<PlayerSide, PlayerType>()
         {
             {PlayerSide.First, PlayerType.Human},
-            {PlayerSide.Second, PlayerType.PC}
+            {PlayerSide.Second, PlayerType.Human}
         };
 
         public Game(Field f)
         {
             _field = f;
             _rule = new ControlRule(this);
-
-            if (_playersType.ContainsValue(PlayerType.PC))
-            {
-                _bot = new Bot();
-            }
+             _bot = new Bot();
 
         }
 
@@ -154,6 +150,11 @@ namespace Classes
 
             }
 
+            _rule.RestartEnPassent();
+
+
+            FieldPoint beofreMovePoint = _active.Item1._p;
+
             switch (_active.Item2[p.y, p.x])
             {
                 case TypeMove.Simple:
@@ -170,6 +171,26 @@ namespace Classes
                     Сastling(_active.Item1, p);
                     break;
 
+                case TypeMove.EnPassant:
+                    EnPassant(_active.Item1, p);
+                    break;
+
+            }
+
+            if (_active.Item1.ChPType == ChPType.Pawn)
+            {
+                Pawn pawn = (Pawn)_active.Item1;
+                if (_rule.PromotionAccess(pawn))
+                {
+                    _UI.FieldRender();
+                    Promotion(pawn);
+
+                }
+                else
+                {
+                    _rule.ChecklongPawnMove(pawn, beofreMovePoint, p);
+
+                }
             }
 
             return true;
@@ -177,32 +198,33 @@ namespace Classes
 
         }
 
-        private void Move(ChessPiece chP, FieldPoint p)
+        private void Move(ChessPiece chP, FieldPoint MovePoint)
         {
             _field.SetChP(chP._p, null);
-            _field.SetChP(p, chP);
-            if (chP.ChPType == ChPType.Pawn && _rule.PawnTransformationAccess(chP))
-            {
-                _UI.FieldRender();
-                Promotion(chP);
-
-            }
+            _field.SetChP(MovePoint, chP);
         }
 
-        private void Сastling(ChessPiece king, FieldPoint p)
+        private void Сastling(ChessPiece king, FieldPoint kingMovePoint)
         {
-            int shift = _rule.ShiftRelativeRook(king,p);
-            ChessPiece rook;
-            
-            rook = _field.GetChP(new FieldPoint(king._p.y, king._p.x + shift));
+            int shift = _rule.ShiftRelativeRook(king,kingMovePoint);
 
-            _field.SetChP(rook._p, null);
-            _field.SetChP(new FieldPoint(king._p.y, king._p.x + Math.Sign(shift)), rook);
-            _field.SetChP(king._p, null);
-            _field.SetChP(p, king);
+            ChessPiece rook = _field.GetChP(new FieldPoint(king._p.y, king._p.x + shift));
+
+              Move(rook, new FieldPoint(king._p.y, king._p.x + Math.Sign(shift)));
+              Move(king, kingMovePoint);
+
 
         }
+        private void EnPassant(ChessPiece thisPawn, FieldPoint pawnMovePoint)
+        {
+            FieldPoint targetPawnPoint = new FieldPoint(thisPawn._p.y,pawnMovePoint.x);
 
+            _field.SetChP(targetPawnPoint, null);
+            Move(thisPawn, pawnMovePoint);
+
+
+
+        }
 
         private List<(FieldPoint, TypeMove)> EditMoves(ChessPiece thisChP, IEnumerable<IEnumerable<(FieldPoint, TypeMove)>> list)//добавление учета других фигур на доске в передвижениях фигуры
         {
@@ -229,12 +251,20 @@ namespace Classes
                             result = TypeMove.Simple;
 
                     //на клетке есть вражеская и данным ходом можно атаковать
-                    else if (cellChP != null && thisChP.Side != cellChP.Side && type != TypeMove.Simple)
+                    else if (type != TypeMove.Simple)
                     {
-                        result = TypeMove.Attack;                      
+                        if (cellChP != null && thisChP.Side != cellChP.Side)
+                        {
+                            result = TypeMove.Attack;
+                        }
+                        else if(_rule.EnPassentAccess(thisChP,p))
+                        {
+                            result = TypeMove.EnPassant;
+                        }
                     }
                     else
                         break;
+
 
                     if (result!=0 && _rule.AccessCell(thisChP, p))
                         movesPoints.Add((p, result));
@@ -289,7 +319,7 @@ namespace Classes
 
         }
 
-        private void Promotion(ChessPiece chP)
+        private void Promotion(Pawn pawn)
         {
             Type classChP;
             if (_playersType[(PlayerSide)_turn.Current] == PlayerType.Human)
@@ -306,8 +336,8 @@ namespace Classes
             {
                 _bot.PromotionAdd(Data.ChPClassToStr[classChP]);
             }
-            ChessPiece newChP = (ChessPiece)Activator.CreateInstance(classChP, chP._p,chP.Side);
-           _field.SetChP(chP._p, newChP);
+            ChessPiece newChP = (ChessPiece)Activator.CreateInstance(classChP, pawn._p,pawn.Side);
+           _field.SetChP(pawn._p, newChP);
 
 
         }

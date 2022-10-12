@@ -18,8 +18,8 @@ namespace Classes
 
         public override ChPType ChPType => ChPType.Pawn;
 
-        int yDirect;
-        public FieldPoint[] directionPoints => new FieldPoint[3] { new FieldPoint(yDirect, 0), new FieldPoint(yDirect, 1), new FieldPoint(yDirect, -1) };
+        public int yDirect;
+        public FieldPoint[] directionPoints => new FieldPoint[3] { new FieldPoint(yDirect, 0), new FieldPoint(yDirect, 1), new FieldPoint(yDirect, -1)};
 
         public override IEnumerable<IEnumerable<(FieldPoint, TypeMove)>> GetMoves()
         {

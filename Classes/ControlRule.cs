@@ -7,10 +7,11 @@ namespace Classes
 {
     public class ControlRule
     {
+        private Game _game;
         public bool[,] _unsafeCell = new bool[Field.maxY, Field.maxX];
         private Dictionary<ChessPiece, List<FieldPoint>> _protectKing;
         private List<List<FieldPoint>> _checkLines;
-        private Game _game;
+        private FieldPoint _enPassentCell;
 
 
         public ControlRule(Game game )
@@ -224,10 +225,38 @@ namespace Classes
 
         }
 
-        public bool PawnTransformationAccess(ChessPiece chP)
+        public bool PromotionAccess(Pawn pawn)
         {
-            int requiredLine = (chP.Side == PlayerSide.First ? 0 : Field.maxY - 1);
-            return (chP._p.y == requiredLine ? true : false);
+            int requiredLine = (pawn.Side == PlayerSide.First ? 0 : Field.maxY - 1);
+            return (pawn._p.y == requiredLine ? true : false);
         }
+
+        public void ChecklongPawnMove(Pawn pawn,FieldPoint beforeMovePoint, FieldPoint afterMovePoint)
+        {
+            if (Math.Abs(beforeMovePoint.y - afterMovePoint.y) == 2)
+            {
+                int yBackCell = beforeMovePoint.y + pawn.yDirect;
+                _enPassentCell = new FieldPoint(yBackCell, beforeMovePoint.x);
+            }
+        }
+
+        public void RestartEnPassent()
+        {
+            _enPassentCell = null;
+        }
+
+        public bool EnPassentAccess(ChessPiece chP, FieldPoint targetP)
+        {
+            if (chP.ChPType == ChPType.Pawn && targetP == _enPassentCell)
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }
