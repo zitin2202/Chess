@@ -16,7 +16,7 @@ namespace Classes
         private Dictionary<ChessPiece, List<(FieldPoint, TypeMove)>> _allMovesPoints;
         public IUI _UI;
         Bot _bot;
-        bool _autoRePlay = true;
+        bool _autoRePlay = false;
         public Dictionary<PlayerSide, int> RelativeValueCount = new Dictionary<PlayerSide, int>()
         {
             {PlayerSide.First, 0},
