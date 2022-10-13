@@ -39,7 +39,7 @@ namespace Classes
         });
 
             StreamWriter wr = process.StandardInput;
-            wr.WriteLine("setoption name threads value 12");
+            wr.WriteLine("setoption name threads value 6");
             wr.WriteLine($"setoption name Skill Level value {_skillLevel}");
             wr.WriteLine("position startpos move " + _moves);
             wr.WriteLine($"go movetime {_thinkingTime}");
@@ -66,9 +66,12 @@ namespace Classes
         public Func<FieldPoint> СhooseChpAndMove()
         {
             Queue<string> chPAndMove = TakeAndMove();
-            return () => {
-                string movee = _move;
-                string movees = _moves; return Data.GetPointUsingName(chPAndMove.Dequeue()); };
+
+                return () => {
+                    string movee = _move;
+                    string movees = _moves; return Data.GetPointUsingName(chPAndMove.Dequeue());
+                };
+
         }
         public Type PromotionSet()
         {

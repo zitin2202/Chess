@@ -27,7 +27,7 @@ namespace Classes
         public Dictionary<PlayerSide, PlayerType> _playersType { get;} = new Dictionary<PlayerSide, PlayerType>()
         {
             {PlayerSide.First, PlayerType.Human},
-            {PlayerSide.Second, PlayerType.Human}
+            {PlayerSide.Second, PlayerType.PC}
         };
 
         public Game(Field f)
