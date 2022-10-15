@@ -123,8 +123,11 @@ namespace ChessForm
                 ChessPiece chP = Game._field.GetChP(i.Value);
                 if (chP != null)
                 {
-                    Bitmap bitmap = new Bitmap(new Bitmap($"chess_pieces\\{chP.Side}\\{chP.ChPType}.png"), ButtonCell.SizeImage);
-                    i.Key.Image = bitmap;
+                    lock (this)
+                    {
+                        Bitmap bitmap = new Bitmap(new Bitmap($"chess_pieces\\{chP.Side}\\{chP.ChPType}.png"), ButtonCell.SizeImage);
+                        i.Key.Image = bitmap;
+                    }
 
                 }
                 else

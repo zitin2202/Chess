@@ -336,7 +336,7 @@ namespace Classes
 
             if (MovesCount > 0)
 
-                if (RelativeValueCount[PlayerSide.First] > 3 && RelativeValueCount[PlayerSide.Second] > 3)
+                if (RelativeValueCount[PlayerSide.First] > 3 || RelativeValueCount[PlayerSide.Second] > 3)
                 {
                     return Outcome.Сontinue;
                 }
