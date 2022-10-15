@@ -25,13 +25,13 @@ namespace Classes
 
         void HaventSuchMove();
  
-        void SimpleMove(ChessPiece thisChP,FieldPoint targetP);
+        void SimpleMove(FieldPoint startP, ChessPiece thisChP,FieldPoint targetP);
 
-        void Attack(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP);
+        void Attack(FieldPoint startP, ChessPiece thisChP, FieldPoint targetP, ChPType typeTargetChP);
 
-        void Сastling(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP);
+        void Сastling(FieldPoint startP, ChessPiece thisChP, FieldPoint targetP);
 
-        Type Promotion();
+        ChPType Promotion();
 
         void Victory(PlayerSide victorySide);
 

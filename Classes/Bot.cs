@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Enums;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -68,30 +69,30 @@ namespace Classes
             Queue<string> chPAndMove = TakeAndMove();
 
                 return () => {
-                    string movee = _move;
-                    string movees = _moves; return Data.GetPointUsingName(chPAndMove.Dequeue());
+                    Data.GetPointUsingName(chPAndMove.Dequeue(), out FieldPoint point);
+                    return point;
                 };
 
         }
-        public Type PromotionSet()
+        public ChPType PromotionSet()
         {
-            Type promotionChess = Data.StrToChPClass[_promotionChess];
+            ChPType promotionChessType = Data.StrToChpType[_promotionChess];
             _promotionChess = "";
-            return promotionChess;
+            return promotionChessType;
         }
 
         public void MoveAdd(FieldPoint beforePoint, FieldPoint afterPoint)
         {
-            _moves += Data.fieldPointToName[0, beforePoint.x] + Data.fieldPointToName[1, beforePoint.y];
-            _moves += Data.fieldPointToName[0, afterPoint.x] + Data.fieldPointToName[1, afterPoint.y];
+            _moves += Data.FieldPointIntsToName[0, beforePoint.x] + Data.FieldPointIntsToName[1, beforePoint.y];
+            _moves += Data.FieldPointIntsToName[0, afterPoint.x] + Data.FieldPointIntsToName[1, afterPoint.y];
             _moves += " ";
         }
 
 
-        public void PromotionAdd(string promotionChess)
+        public void PromotionAdd(char promotionChessSign)
         {
             _moves = _moves.Trim();
-            _moves += promotionChess + " ";
+            _moves += promotionChessSign + " ";
         }
 
     }

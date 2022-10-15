@@ -13,8 +13,7 @@ namespace ChessForm
 {
     public partial class СhoiceChessPieceForm : Form
     {
-        private Type[] chPClasses = new Type[] { Data.StrToChPClass["b"], Data.StrToChPClass["n"], Data.StrToChPClass["r"], Data.StrToChPClass["q"]};
-        public Dictionary<Button, Type> _chessPieces;
+        public Dictionary<Button, ChPType> _chessPieces;
         private FormUI _UI;
         public СhoiceChessPieceForm(FormUI UI)
         {
@@ -24,7 +23,7 @@ namespace ChessForm
             FormBorderStyle = FormBorderStyle.FixedSingle;
             TopLevel = true;
 
-            _chessPieces = new Dictionary<Button, Type>();
+            _chessPieces = new Dictionary<Button, ChPType>();
             _UI = UI;
 
             var btnColor = _UI.СolorSelection();
@@ -34,7 +33,7 @@ namespace ChessForm
                 ButtonPromotion btn = new ButtonPromotion(_UI);
                 btnColor.MoveNext();
                 btn.BackColor = btnColor.Current;
-                _chessPieces.Add(btn, chPClasses[i]);
+                _chessPieces.Add(btn, (ChPType)i+1);
                 btn.Location = new Point(0, i * btn.Height);
                 
 

@@ -15,6 +15,7 @@ namespace Classes
 
         public override int RelativeValue => 0;
 
+        public override char Sign => 'k';
 
         public FieldPoint[] directionPoints => new FieldPoint[] {new FieldPoint(1, 0), new FieldPoint(-1, 0),
                 new FieldPoint(0, 1), new FieldPoint(0, -1), new FieldPoint(1, 1),

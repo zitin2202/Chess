@@ -19,6 +19,8 @@ namespace Classes
 
         public abstract int RelativeValue { get; }
 
+        public abstract char Sign { get;}
+
         public FieldPoint _p;
 
         public bool StartPosition = true;

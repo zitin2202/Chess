@@ -19,7 +19,7 @@ namespace ChessForm
         public Dictionary<FieldPoint, ButtonCell> _buttons = new Dictionary<FieldPoint, ButtonCell>();
         public bool pawnTransformtaion = false;
         public ButtonCell _activeButton = null;
-        Type _promotionChess = null;
+        ChPType _promotionChess = 0;
         bool _helpInGame = false;
 
 
@@ -201,36 +201,36 @@ namespace ChessForm
 
         }
 
-        public void SimpleMove(ChessPiece thisChP, FieldPoint targetP)
+        public void SimpleMove(FieldPoint startP, ChessPiece thisChP, FieldPoint targetP)
         {
 
         }
 
-        public void Attack(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP)
+        public void Attack(FieldPoint startP, ChessPiece thisChP, FieldPoint targetP, ChPType typeTargetChP)
         {
 
         }
 
-        public void Сastling(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP)
+        public void Сastling(FieldPoint startP, ChessPiece thisChP, FieldPoint targetP)
         {
 
         }
 
-        public Type Promotion()
+        public ChPType Promotion()
         {
             pawnTransformtaion = true;
             foreach (var i in promotionForm._chessPieces)
             {
-                i.Key.Image = new Bitmap(new Bitmap($"chess_pieces\\{Game._turn.Current}\\{i.Value.Name}.png"), ButtonPromotion.SizeImage);
+                i.Key.Image = new Bitmap(new Bitmap($"chess_pieces\\{Game._turn.Current}\\{i.Value}.png"), ButtonPromotion.SizeImage);
             }
 
             promotionForm.ShowDialog();
-            while (_promotionChess == null)
+            while (_promotionChess == 0)
             {
             }
 
-            Type type = _promotionChess;
-            _promotionChess = null;
+            ChPType type = _promotionChess;
+            _promotionChess = 0;
             pawnTransformtaion = false;
             return type;
         }

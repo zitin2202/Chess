@@ -18,17 +18,6 @@ namespace Chess
             ConsoleUI UI = new ConsoleUI(new Game(new Field()));
             UI.Game.Start();
 
-            //Bot bot = new Bot();
-            //Queue<string> queue = bot.TakeAndMove();
-
-
-
-
-        }
-        //position startpos move e2e4
-        public static void Write()
-        {
-
         }
 
 

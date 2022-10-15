@@ -17,6 +17,9 @@ namespace Classes
 
         public override int RelativeValue => 5;
 
+        public override char Sign => 'r';
+
+
         public FieldPoint[] directionPoints => new FieldPoint[] { new FieldPoint(1, 0), new FieldPoint(-1, 0), new FieldPoint(0, 1), new FieldPoint(0, -1)};
 
         private int lenMove = 7;

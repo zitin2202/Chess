@@ -18,42 +18,18 @@ namespace Classes
             return false;
         }
 
-        public static bool ConsoleInputValidation(string[] mass, out FieldPoint p)
-        {
-            int[] xy = new int[2];
-            if (mass.Length==2 && int.TryParse(mass[0],out xy[0]) && int.TryParse(mass[1], out xy[1]))
-            {
-
-                p = new FieldPoint(xy[0],xy[1]);
-                if (ValidationCell(p))
-                    return true;
-
-
-            }
-
-            IncorrectInputMessage();
-            p = null;
-            return false;
-
-
-        }
-
         public static bool ConsoleСhoiceChPValidation(string input)
         {
-            if (Data.StrToChPClass.ContainsKey(input))
+            if (Data.StrToChpType.ContainsKey(input))
                 return true;
             else
             {
-                IncorrectInputMessage();
+                ConsoleUI.IncorrectInputMessage();
                 return false;
             }
           
         }
 
-        private static void IncorrectInputMessage()
-        {
-            Console.WriteLine("Не корректный ввод\n");
-        }
     }
 
 

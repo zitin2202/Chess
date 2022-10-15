@@ -22,6 +22,8 @@ namespace Classes
         ///(по сути, данные очки сюда вводяться только для этого)
         public override int RelativeValue => 4;
 
+        public override char Sign => 'p';
+
 
         public int yDirect;
         public FieldPoint[] directionPoints => new FieldPoint[3] { new FieldPoint(yDirect, 0), new FieldPoint(yDirect, 1), new FieldPoint(yDirect, -1)};

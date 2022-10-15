@@ -27,7 +27,7 @@ namespace Classes
         public Dictionary<PlayerSide, PlayerType> _playersType { get;} = new Dictionary<PlayerSide, PlayerType>()
         {
             {PlayerSide.First, PlayerType.Human},
-            {PlayerSide.Second, PlayerType.PC}
+            {PlayerSide.Second, PlayerType.Human}
         };
 
         public Game(Field f)
@@ -47,11 +47,9 @@ namespace Classes
             _field.FieldReset();
             _rule = new ControlRule(this);
             _turn = TurnToGo();
-
             while (true)
             {
                 _turn.MoveNext();
-
                 RelativeValueCount[PlayerSide.First] = 0;
                 RelativeValueCount[PlayerSide.Second] = 0;
 
@@ -172,20 +170,22 @@ namespace Classes
             {
                 case TypeMove.Simple:
                     Move(_active.Item1, p);
-                    _UI.SimpleMove(_active.Item1,p);
+                    _UI.SimpleMove(beofreMovePoint, _active.Item1, p);
                     break;
 
                 case TypeMove.Attack:
                     Move(_active.Item1, p);
-                    _UI.Attack(_active.Item1,p, targetChP);
+                    _UI.Attack(beofreMovePoint, _active.Item1,p, targetChP.ChPType);
                     break;
 
                 case TypeMove.Сastling:
                     Сastling(_active.Item1, p);
+                    _UI.Сastling(beofreMovePoint, _active.Item1, p);
                     break;
 
                 case TypeMove.EnPassant:
                     EnPassant(_active.Item1, p);
+                    _UI.Attack(beofreMovePoint, _active.Item1, p, ChPType.Pawn);
                     break;
 
             }
@@ -361,23 +361,26 @@ namespace Classes
 
         private void Promotion(Pawn pawn)
         {
-            Type classChP;
+            ChPType typeChoice;
             if (_playersType[(PlayerSide)_turn.Current] == PlayerType.Human)
             {
-                classChP = _UI.Promotion();
+                typeChoice = _UI.Promotion();
 
             }
             else
             {
-                classChP = _bot.PromotionSet();
+                typeChoice = _bot.PromotionSet();
             }
 
-            if (_bot!=null)
-            {
-                _bot.PromotionAdd(Data.ChPClassToStr[classChP]);
-            }
-            ChessPiece newChP = (ChessPiece)Activator.CreateInstance(classChP, pawn._p,pawn.Side);
+
+            Func<FieldPoint, PlayerSide, ChessPiece> chPClass = Data.ChPTypeToFuncClass[typeChoice];
+            ChessPiece newChP = chPClass(pawn._p,pawn.Side);
            _field.SetChP(pawn._p, newChP);
+
+            if (_bot != null)
+            {
+                _bot.PromotionAdd(newChP.Sign);
+            }
 
 
         }

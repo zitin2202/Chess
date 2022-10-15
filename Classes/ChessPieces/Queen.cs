@@ -16,6 +16,9 @@ namespace Classes
 
         public override int RelativeValue => 9;
 
+        public override char Sign => 'q';
+
+
         public override IEnumerable<IEnumerable<(FieldPoint, TypeMove)>> GetMoves()
         {
             return new Rook(_p,Side).GetMoves().Concat(new Bishop(_p, Side).GetMoves());

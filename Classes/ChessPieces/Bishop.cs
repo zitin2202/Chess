@@ -15,6 +15,9 @@ namespace Classes
         public override ChPType ChPType => ChPType.Bishop;
 
         public override int RelativeValue => 3;
+
+        public override char Sign => 'b';
+
         public FieldPoint[] directionPoints => new FieldPoint[]{ new FieldPoint(1, 1), new FieldPoint(1, -1), new FieldPoint(-1, 1), new FieldPoint(-1, -1) };
 
         private int lenMove = 7;

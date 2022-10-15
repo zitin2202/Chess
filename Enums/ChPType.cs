@@ -4,11 +4,12 @@ namespace Enums
 {
     public enum ChPType
     {
-        Pawn,
-        King,
-        Rook,
+
+        Rook = 1,
         Bishop,
         Knight,
         Queen,
+        Pawn,
+        King,
     }
 }

@@ -24,7 +24,7 @@ namespace Classes
 
             for (int x = 0; x < Field.maxX; x++)
             {
-                Console.Write($"{x}  ");
+                Console.Write($"{Data.FieldPointIntsToName[0,x]}  ");
             }
             Console.WriteLine();
 
@@ -34,7 +34,7 @@ namespace Classes
 
                 for (int x = 0; x < Field.maxX; x++)
                 {
-                    Console.Write($"{(x == 0 ? $"{y} " : "")}");
+                    Console.Write($"{(x == 0 ? $"{Data.FieldPointIntsToName[1,y]} " : "")}");
 
 
                     ChessPiece chP = Game._field.GetChP(new FieldPoint(y, x));
@@ -71,23 +71,25 @@ namespace Classes
 
         public void TurnReport()
         {
-            Console.WriteLine($"Очередь игрока: {Game._turn.Current}");
+            Console.WriteLine($"Очередь игрока: {Data.SideToRu[(PlayerSide)Game._turn.Current]}");
         }
 
         public FieldPoint СellSelection()
         {
             string message = (Game._active.Item1 == null ? "Выберите фигуру" : "Ходы данной фигуры");
-            string[] s;
+            string strPoint;
             FieldPoint p;
+            bool firstСycle = true;
             do
             {
-                Console.WriteLine(message+"\n");
-                s = Console.ReadLine().Split(",");
+                if (!firstСycle)
+                    IncorrectInputMessage();
 
+                Console.WriteLine(message + "\n");
+                strPoint = Console.ReadLine();
+                firstСycle = false;
             }
-            while (!Validation.ConsoleInputValidation(s, out p));
-
-
+            while (!Data.GetPointUsingName(strPoint, out p));
 
             return p;
         }
@@ -101,13 +103,13 @@ namespace Classes
 
         public void SelectedСhessPiece(ChessPiece chP)
         {
-            Console.WriteLine((chP.Side, chP.ChPType));
+            Console.WriteLine(Data.ChPTypeToRu[chP.ChPType]);
         }
 
         public void PossibleMove(FieldPoint p, TypeMove type)
         {
             ChessPiece targetChP = Game._field.GetChP(p);
-            Console.WriteLine($"{(p.y,p.x)}: {( targetChP == null ? "Пусто" : targetChP.ChPType)}, {type}");
+            Console.WriteLine($"{Data.GetNamePointsUsingFieldPoint(p)}: {( targetChP == null ? "Пусто" : Data.ChPTypeToRu[targetChP.ChPType])}, {Data.TypeMoveToRu[type]}");
         }
 
         public void NotChessМoveReport()
@@ -120,33 +122,33 @@ namespace Classes
             Console.WriteLine("Вы не можете походить сюда\n");
         }
 
-        public void SimpleMove(ChessPiece thisChP, FieldPoint targetP)
+        public void SimpleMove(FieldPoint startP, ChessPiece thisChP, FieldPoint targetP)
         {
-            Console.WriteLine($"\n{defaultStr(thisChP)}{thisChP.ChPType} идет на {(targetP.y, targetP.x)}\n");
+            Console.WriteLine($"\n{StartStr(thisChP, startP)} идет на {Data.GetNamePointsUsingFieldPoint(targetP)}\n");
 
         }
 
-        public void Attack(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP)
+        public void Attack(FieldPoint startP, ChessPiece thisChP, FieldPoint targetP, ChPType typeTargetChP)
         {
-            Console.WriteLine($"\n{defaultStr(thisChP)}{thisChP.ChPType} съел {targetChP.ChPType} на {(targetP.y, targetP.x)}\n");
+            Console.WriteLine($"\n{StartStr(thisChP, startP)} съедает {Data.ChPTypeToRu[typeTargetChP]} на {Data.GetNamePointsUsingFieldPoint(targetP)}\n");
         }
 
-        public void Сastling(ChessPiece thisChP, FieldPoint targetP, ChessPiece targetChP)
+        public void Сastling(FieldPoint startP, ChessPiece thisChP, FieldPoint targetP)
         {
-            string castlingType = (Game._rule.ShiftRelativeRook(thisChP, targetP) > 0 ? "короткую" : "длинную");
+            string castlingType = (targetP.x > startP.x ? "короткую" : "длинную");
 
-            Console.WriteLine($"\n{defaultStr(thisChP)} совершает {castlingType} рокировку\n");
+            Console.WriteLine($"\n{StartStr(thisChP, startP)} совершает {castlingType} рокировку\n");
 
-
-        }
-
-        private string defaultStr(ChessPiece chP)
-        {
-            return $"{chP.Side} {(chP._p.y, chP._p.x)}: ";
 
         }
 
-        public Type Promotion()
+        private string StartStr(ChessPiece chP, FieldPoint startP)
+        {
+            return $"{Data.SideToRu[chP.Side]} {Data.GetNamePointsUsingFieldPoint(startP)}: {Data.ChPTypeToRu[chP.ChPType]}";
+
+        }
+
+        public ChPType Promotion()
         {
             Console.WriteLine("Пешка дошла до конца доски\nВыберите, на какую фигуру ее поменять");
             Console.WriteLine("b - слон, n - лошадь,  r - ладья, q - ферзь");
@@ -157,7 +159,7 @@ namespace Classes
             }
             while (!Validation.ConsoleСhoiceChPValidation(input));
 
-            return Data.StrToChPClass[input];
+            return Data.StrToChpType[input];
 
 
         }
@@ -165,7 +167,7 @@ namespace Classes
 
         public void Victory(PlayerSide victorySide)
         {
-            Console.WriteLine($"Шах и мат! Победила сторона {victorySide}!");
+            Console.WriteLine($"Шах и мат! Победила сторона {Data.SideToRu[victorySide]}!");
         }
 
         public void Draw()
@@ -174,7 +176,10 @@ namespace Classes
         }
 
 
-
+        public  static void IncorrectInputMessage()
+        {
+            Console.WriteLine("Не корректный ввод\n");
+        }
 
 
     }
