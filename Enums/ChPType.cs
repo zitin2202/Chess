@@ -6,10 +6,10 @@ namespace Enums
     {
 
         Rook = 1,
-        Bishop,
-        Knight,
-        Queen,
-        Pawn,
-        King,
+        Bishop = 2,
+        Knigh = 3,
+        Queen = 4,
+        Pawn = 5,
+        King = 6,
     }
 }
